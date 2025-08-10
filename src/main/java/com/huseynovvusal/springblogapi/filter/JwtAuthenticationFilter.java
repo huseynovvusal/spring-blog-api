@@ -1,7 +1,7 @@
 package com.huseynovvusal.springblogapi.filter;
 
 import com.huseynovvusal.springblogapi.service.JwtService;
-import com.huseynovvusal.springblogapi.service.UserDetailsImpl;
+import com.huseynovvusal.springblogapi.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserDetailsImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
