@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users_table")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,7 +40,7 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.USER;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
