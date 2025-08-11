@@ -1,5 +1,8 @@
 package com.huseynovvusal.springblogapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,6 +47,7 @@ public class User implements UserDetails {
     private Role role = Role.USER;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("author")
     private List<Blog> blogs = new ArrayList<>();
 
     @CreationTimestamp

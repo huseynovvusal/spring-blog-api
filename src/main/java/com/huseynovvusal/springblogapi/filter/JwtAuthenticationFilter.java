@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        try{
+        try {
             String token = authorizationHeader.substring(7);
 
             String username = jwtService.extractUsername(token);
@@ -47,7 +48,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
+
+                if (userDetails == null) {
+                    throw new UsernameNotFoundException("User not found");
+                }
+
+                System.out.println("Username: " + userDetails.getUsername());
+
                 if (jwtService.isTokenValid(token, userDetails)) {
+
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities()
                     );
@@ -58,11 +67,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
 
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                    System.out.println("Debug: SecurityContextHolder set for user: " + username);
+                }else{
+                    System.out.println("Invalid JWT token for user: " + username);
                 }
             }
 
             filterChain.doFilter(request, response);
-        }catch (Exception e){
+        } catch (Exception e) {
+            // Log the error and resolve the exception using the HandlerExceptionResolver
+            System.out.println("JWT Authentication Filter Error: " + e.getMessage());
             handlerExceptionResolver.resolveException(request, response, null, e);
         }
 

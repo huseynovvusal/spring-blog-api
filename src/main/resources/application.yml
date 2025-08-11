@@ -13,7 +13,7 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -28,6 +28,12 @@ spring:
           auth: true
           starttls:
             enable: true
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
 
 security:
   jwt:

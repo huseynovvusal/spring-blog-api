@@ -1,12 +1,20 @@
 package com.huseynovvusal.springblogapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "blogs_table")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,8 +26,9 @@ public class Blog {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
+    @JsonIgnoreProperties({"blogs", "password", "createdAt", "updatedAt"})
     private User author;
 
     @Column(name = "created_at", updatable = false)
