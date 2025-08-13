@@ -1,53 +1,50 @@
 package com.huseynovvusal.springblogapi.service;
 
 import com.huseynovvusal.springblogapi.dto.CreateBlog;
+import com.huseynovvusal.springblogapi.dto.response.BlogResponseDto;
+import com.huseynovvusal.springblogapi.mapper.BlogMapper;
 import com.huseynovvusal.springblogapi.model.Blog;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.BlogRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class BlogService {
-    private final UserService userService;
+
     private final BlogRepository blogRepository;
+    private final UserService userService;
 
-    public List<Blog> getAllBlogs() {
-        return blogRepository.findAll();
+    public Page<BlogResponseDto> getAllBlogs(Pageable pageable) {
+        return blogRepository.findAll(pageable).map(BlogMapper::toDto);
     }
 
-    public Blog getBlogById(Long id) {
-        return blogRepository.findById(id).orElse(null);
+    public BlogResponseDto getById(Long id) {
+        Blog b = blogRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Blog not found"));
+        return BlogMapper.toDto(b);
     }
 
-    public List<Blog> getBlogsByAuthor(String username) {
+    public Page<BlogResponseDto> getByAuthor(String username, Pageable pageable) {
         User author = userService.getUserByUsername(username);
-
-        return blogRepository.findByAuthor(author);
+        return blogRepository.findByAuthor(author, pageable).map(BlogMapper::toDto);
     }
 
-    public Blog createBlog(CreateBlog createBlog) {
-        User currentUser = userService.getCurrentUser();
-
-        // Log the current user's username for debugging purposes
-        System.out.println("Current User: " + currentUser.getUsername());
-
-        Blog blog = new Blog();
-
-        blog.setTitle(createBlog.getTitle());
-        blog.setContent(createBlog.getContent());
-        blog.setAuthor(currentUser);
-
-        Blog createdBlog = blogRepository.save(blog);
-
-        System.out.println("Blog created with ID: " + createdBlog.getId() +
-                ", Title: " + createdBlog.getTitle());
-
-        return createdBlog;
+    public BlogResponseDto create(CreateBlog request) {
+        User current = userService.getCurrentUser();
+        Blog b = new Blog();
+        b.setTitle(request.getTitle());
+        b.setContent(request.getContent());
+        b.setAuthor(current);
+        Blog saved = blogRepository.save(b);
+        return BlogMapper.toDto(saved);
     }
 }

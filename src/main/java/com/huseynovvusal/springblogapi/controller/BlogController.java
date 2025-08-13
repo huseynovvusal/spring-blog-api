@@ -1,9 +1,13 @@
 package com.huseynovvusal.springblogapi.controller;
 
 import com.huseynovvusal.springblogapi.dto.CreateBlog;
+import com.huseynovvusal.springblogapi.dto.response.BlogResponseDto;
 import com.huseynovvusal.springblogapi.model.Blog;
 import com.huseynovvusal.springblogapi.service.BlogService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,22 +21,27 @@ public class BlogController {
     private final BlogService blogService;
 
     @GetMapping
-    public ResponseEntity<List<Blog>> getAllBlogs() {
-        return ResponseEntity.ok(blogService.getAllBlogs());
+    public ResponseEntity<Page<BlogResponseDto>> getAllBlogs(
+            @PageableDefault(size = 20, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC)
+            Pageable pageable) {
+        return ResponseEntity.ok(blogService.getAllBlogs(pageable));
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<List<Blog>> getBlogsByAuthor(@PathVariable String username) {
-        List<Blog> blogs = blogService.getBlogsByAuthor(username);
+    @GetMapping("/{id}")
+    public ResponseEntity<BlogResponseDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(blogService.getById(id));
+    }
 
-        return ResponseEntity.ok(blogs);
+    @GetMapping("/author/{username}")
+    public ResponseEntity<Page<BlogResponseDto>> getByAuthor(
+            @PathVariable String username,
+            @PageableDefault(size = 20, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC)
+            Pageable pageable) {
+        return ResponseEntity.ok(blogService.getByAuthor(username, pageable));
     }
 
     @PostMapping
-    public ResponseEntity<Blog> createBlog(@RequestBody CreateBlog createBlog) {
-        Blog createdBlog = blogService.createBlog(createBlog);
-
-        return ResponseEntity.ok(createdBlog);
+    public ResponseEntity<BlogResponseDto> create(@RequestBody CreateBlog body) {
+        return ResponseEntity.ok(blogService.create(body));
     }
-
 }

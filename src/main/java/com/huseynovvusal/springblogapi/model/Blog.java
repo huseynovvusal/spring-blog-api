@@ -28,7 +28,7 @@ public class Blog {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
-    @JsonIgnoreProperties({"blogs", "password", "createdAt", "updatedAt"})
+    //@JsonIgnoreProperties({"blogs", "password", "createdAt", "updatedAt"})
     private User author;
 
     @Column(name = "created_at", updatable = false)

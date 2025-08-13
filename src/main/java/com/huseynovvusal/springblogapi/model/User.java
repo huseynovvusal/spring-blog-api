@@ -47,7 +47,7 @@ public class User implements UserDetails {
     private Role role = Role.USER;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("author")
+    //@JsonIgnoreProperties("author")
     private List<Blog> blogs = new ArrayList<>();
 
     @CreationTimestamp
