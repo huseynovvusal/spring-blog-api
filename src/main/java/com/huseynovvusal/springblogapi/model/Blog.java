@@ -1,41 +1,39 @@
 package com.huseynovvusal.springblogapi.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "blogs_table")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "blogs")
+@Getter
+@Setter
 public class Blog {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    @Lob
+    @Column(nullable = false)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id")
-    //@JsonIgnoreProperties({"blogs", "password", "createdAt", "updatedAt"})
     private User author;
 
-    @Column(name = "created_at", updatable = false)
     @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false, nullable = false)
     private Date createdAt;
 
-    @Column(name = "updated_at")
-    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 }

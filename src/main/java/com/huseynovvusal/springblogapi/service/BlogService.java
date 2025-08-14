@@ -19,25 +19,20 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class BlogService {
-
     private final BlogRepository blogRepository;
     private final UserService userService;
-
     public Page<BlogResponseDto> getAllBlogs(Pageable pageable) {
         return blogRepository.findAll(pageable).map(BlogMapper::toDto);
     }
-
     public BlogResponseDto getById(Long id) {
         Blog b = blogRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Blog not found"));
         return BlogMapper.toDto(b);
     }
-
     public Page<BlogResponseDto> getByAuthor(String username, Pageable pageable) {
         User author = userService.getUserByUsername(username);
         return blogRepository.findByAuthor(author, pageable).map(BlogMapper::toDto);
     }
-
     public BlogResponseDto create(CreateBlog request) {
         User current = userService.getCurrentUser();
         Blog b = new Blog();
