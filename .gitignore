@@ -1,24 +1,19 @@
-HELP.md
-.gradle
+# Gradle files
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+# Maven files
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
 
-### IntelliJ IDEA ###
-.idea
+# IDE files
+# IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -26,15 +21,70 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-### NetBeans ###
+# Eclipse
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
+# VS Code
 .vscode/
 
-### Environment Files ###
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
 *.env
+*.local
+.envrc
+
+# Logs
+*.log
+logs/
+*.pid
+
+# Test output
+test-output/
+surefire-reports/
+jacoco.exec
+
+# Dependency directories
+node_modules/
+bower_components/
+
+# Java specific
+*.class
+*.jar
+*.war
+*.ear
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Misc
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Help files
+HELP.md
+
+# Exclude build folders in source directories
+!**/src/main/**/build/
+!**/src/test/**/build/
