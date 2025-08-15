@@ -5,6 +5,7 @@ import com.huseynovvusal.springblogapi.dto.LoginResponse;
 import com.huseynovvusal.springblogapi.dto.RegisterRequest;
 import com.huseynovvusal.springblogapi.dto.RegisterResponse;
 import com.huseynovvusal.springblogapi.service.AuthenticationService;
+import com.huseynovvusal.springblogapi.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
