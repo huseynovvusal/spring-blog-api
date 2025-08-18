@@ -4,9 +4,9 @@ spring:
   config:
     import: optional:file:.env[.properties]
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/testdb}
+    username: ${SPRING_DATASOURCE_USERNAME:testuser}
+    password: ${SPRING_DATASOURCE_PASSWORD:testpass}
     driver-class-name: org.postgresql.Driver
   jpa:
     show_sql: true
@@ -18,10 +18,10 @@ spring:
       hibernate:
         format_sql: true
   mail:
-    host: ${SPRING_MAIL_HOST}
-    port: ${SPRING_MAIL_PORT}
-    username: ${SPRING_MAIL_USERNAME}
-    password: ${SPRING_MAIL_PASSWORD}
+    host: ${SPRING_MAIL_HOST:localhost}
+    port: ${SPRING_MAIL_PORT:1025}
+    username: ${SPRING_MAIL_USERNAME:mailuser}
+    password: ${SPRING_MAIL_PASSWORD:mailpass}
     properties:
       mail:
         smtp:
@@ -37,9 +37,9 @@ logging:
 
 security:
   jwt:
-    secret_key: ${JWT_SECRET_KEY}
-    expiration_time: ${JWT_EXPIRATION_TIME}
+    secret_key: ${JWT_SECRET_KEY:testsecret}
+    expiration_time: ${JWT_EXPIRATION_TIME:3600000}
 
 client:
   app:
-    url: ${CLIENT_APP_URL}
+    url: ${CLIENT_APP_URL:http://localhost:3000}
