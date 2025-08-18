@@ -1,13 +1,13 @@
 package com.huseynovvusal.springblogapi.service;
 
-import com.huseynovvusal.springblogapi.dto.LoginRequest;
-import com.huseynovvusal.springblogapi.dto.LoginResponse;
-import com.huseynovvusal.springblogapi.dto.RegisterRequest;
-import com.huseynovvusal.springblogapi.dto.RegisterResponse;
+import com.huseynovvusal.springblogapi.dto.*;
+import com.huseynovvusal.springblogapi.dto.response.ForgotPasswordResponse;
+import com.huseynovvusal.springblogapi.dto.response.ResetPasswordResponse;
 import com.huseynovvusal.springblogapi.model.Role;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,15 +16,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+
+    @Value("${client.app.url}")
+    private String clientUrl;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final JavaMailSender mailSender;
     private final EmailService emailService;
 
     public RegisterResponse register(RegisterRequest request) {
@@ -68,5 +72,26 @@ public class AuthenticationService {
 
         return new LoginResponse(token);
     }
+
+    public ForgotPasswordResponse generatePasswordResetToken(ForgotPasswordRequest request){
+        Optional<User> user = Optional.ofNullable(userRepository.findByEmail(request.getEmail())
+                                      .orElseThrow(() -> new UsernameNotFoundException("User not found with email " + request.getEmail())));
+        String resetLink = clientUrl.concat(jwtService.generateToken(user.get()));
+        emailService.sendPasswordResetToken(user.get(),resetLink);
+        return new ForgotPasswordResponse("Reset link has been sent to your registered email "+ user.get().getEmail());
+    }
+
+    public ResetPasswordResponse verifyAndResetPassword(ResetPasswordRequest request){
+        String username = jwtService.extractUsername(request.getToken());
+        User user = userRepository.findByUsername(username);
+        if (user == null){
+            throw new UsernameNotFoundException("User Not found");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+        emailService.sendPasswordResetSuccess(user);
+        return new ResetPasswordResponse("Password Reset success");
+    }
+
 }
 

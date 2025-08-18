@@ -1,11 +1,11 @@
 package com.huseynovvusal.springblogapi.controller;
 
-import com.huseynovvusal.springblogapi.dto.LoginRequest;
-import com.huseynovvusal.springblogapi.dto.LoginResponse;
-import com.huseynovvusal.springblogapi.dto.RegisterRequest;
-import com.huseynovvusal.springblogapi.dto.RegisterResponse;
+import com.huseynovvusal.springblogapi.dto.*;
+import com.huseynovvusal.springblogapi.dto.response.ForgotPasswordResponse;
+import com.huseynovvusal.springblogapi.dto.response.ResetPasswordResponse;
 import com.huseynovvusal.springblogapi.service.AuthenticationService;
 import com.huseynovvusal.springblogapi.service.EmailService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,5 +28,13 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.login(request));
     }
 
+    @PostMapping("api/forgot-password")
+    public ResponseEntity<ForgotPasswordResponse> getPasswordResetLink(@Valid @RequestBody ForgotPasswordRequest request){
+        return ResponseEntity.ok(authenticationService.generatePasswordResetToken(request));
+    }
 
+    @PostMapping("api/reset-password")
+    public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request){
+        return ResponseEntity.ok(authenticationService.verifyAndResetPassword(request));
+    }
 }
