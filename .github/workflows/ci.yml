@@ -29,11 +29,11 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: chmod +x ./gradlew build
 
   test:
     runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Run tests
-        run: ./gradlew test
+        run: chmod +x ./gradlew test
