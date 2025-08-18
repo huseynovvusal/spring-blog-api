@@ -76,6 +76,18 @@ public class RestExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(EmailFailedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponseDto handleEmailSendingFailed(EmailFailedException ex, HttpServletRequest req) {
+        return ErrorResponseDto.builder()
+                .timestamp(Instant.now())
+                .path(req.getRequestURI())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error("Email Sending Failed")
+                .message(ex.getMessage() != null ? ex.getMessage() : "Failed to send email")
+                .build();
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseDto handleGeneric(Exception ex, HttpServletRequest req) {

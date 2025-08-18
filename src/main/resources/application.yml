@@ -39,3 +39,7 @@ security:
   jwt:
     secret_key: ${JWT_SECRET_KEY}
     expiration_time: ${JWT_EXPIRATION_TIME}
+
+client:
+  app:
+    url: ${CLIENT_APP_URL}
