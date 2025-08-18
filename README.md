@@ -1,29 +1,33 @@
-# Spring Blog API
+# 🚀 Spring Blog API
 
-Spring Blog API is a RESTful backend service for managing blog posts and user authentication, built with Spring Boot. The project is currently under development and not yet feature-complete.
+Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful backend service for managing blog posts and user authentication, built with Spring Boot. The project is currently under active development and new features are coming soon.
 
-## Features (Planned)
-- User registration and authentication (JWT-based)
-- CRUD operations for blog posts
-- Role-based access control
-- Docker support
+> **🌱 Newcomers Welcome!**
+> We encourage developers of all experience levels to contribute. Whether you're new to open source or a seasoned pro, your ideas and code are valued here. Check out our [CONTRIBUTION.md](CONTRIBUTION.md) for easy ways to get started!
 
-## Technologies Used
-- Java
-- Spring Boot
+## 🛠️ Technologies Used
+- Java 24
+- Spring Boot 3.5
 - Spring Security
-- JWT
-- Docker
+- Spring Data JPA
+- Hibernate ORM
+- PostgreSQL
+- JWT (JSON Web Token)
+- Lombok
+- Spring Mail
 - Gradle
+- Docker & Docker Compose
+- JUnit 5
+- PgAdmin
 
-## Getting Started
+## ⚡ Getting Started
 
 ### Prerequisites
 - Java 24
+- Docker (optional, for containerization)
 - Gradle
-- Docker
 
-### Setup
+### 🚦 Setup
 1. Clone the repository:
    ```bash
    git clone <repository-url>
@@ -42,17 +46,17 @@ Spring Blog API is a RESTful backend service for managing blog posts and user au
    docker-compose up --build
    ```
 
-### Configuration
+### ⚙️ Configuration
 Edit `src/main/resources/application.yml` to configure database and other settings.
 
-## API Documentation
+## 📖 API Documentation
 API endpoints and documentation will be provided as development progresses.
 
-## Contributing
+## 🤝 Contributing
 See [CONTRIBUTION.md](CONTRIBUTION.md) for guidelines.
 
-## License
+## 📄 License
 This project is licensed under the MIT License.
 
-## Status
+## 🚧 Status
 **This project is in active development and not yet complete. Features and documentation may change.**

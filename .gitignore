@@ -88,7 +88,3 @@ HELP.md
 # Exclude build folders in source directories
 !**/src/main/**/build/
 !**/src/test/**/build/
-
-#env
-.env
-.env./
