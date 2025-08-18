@@ -8,4 +8,23 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+  mail:
+    host: localhost
+    port: 1025
+    username: testuser
+    password: testpass
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
+security:
+  jwt:
+    secret_key: testsecret
+    expiration_time: 3600000
+
+client:
+  app:
+    url: http://localhost:3000
