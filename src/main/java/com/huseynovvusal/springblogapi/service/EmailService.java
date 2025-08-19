@@ -22,21 +22,24 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
-    public void sendWelcomeEmail(String to, String username) throws MessagingException, IOException {
-        String htmlContent = loadTemplate("templates/welcome-email.html")
-                .replace("{{username}}", username);
+    public void sendWelcomeEmail(String to, String username){
+        try {
+            String htmlContent = loadTemplate("templates/welcome-email.html")
+                    .replace("{{username}}", username);
 
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
 
-        helper.setTo(to);
-        helper.setSubject("Welcome to Spring Blog API!");
-        helper.setText(htmlContent, true);
-
-        mailSender.send(message);
+            helper.setTo(to);
+            helper.setSubject("Welcome to Spring Blog API!");
+            helper.setText(htmlContent, true);
+            mailSender.send(message);
+        }catch (IOException | MessagingException exception){
+            throw new EmailFailedException("Failed to send email",exception);
+        }
     }
 
-    @Async
+
     public void sendPasswordResetToken(User user, String resetLink){
         try {
             String htmlContent = loadTemplate("templates/Forgot-Password-email.html")
@@ -54,7 +57,7 @@ public class EmailService {
         }
     }
 
-    @Async
+
     public void sendPasswordResetSuccess(User user){
         try {
             String htmlContent = loadTemplate("templates/Password-reset-success-email.html")
