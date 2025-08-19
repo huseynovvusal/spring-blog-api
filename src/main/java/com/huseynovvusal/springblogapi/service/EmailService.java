@@ -7,7 +7,6 @@ import jakarta.mail.internet.MimeMessage;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -51,7 +50,6 @@ public class EmailService {
             helper.setSubject("Blog App - Password Reset link");
             helper.setText(htmlContent,true);
             mailSender.send(message);
-            System.out.println("Sent email");
         } catch (IOException | MessagingException e) {
             throw new EmailFailedException("Failed to send email ",e);
         }

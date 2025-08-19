@@ -1,4 +1,4 @@
-package com.huseynovvusal.springblogapi.eventListerners;
+package com.huseynovvusal.springblogapi.eventListener;
 
 import com.huseynovvusal.springblogapi.events.UserRegisteredEvent;
 import com.huseynovvusal.springblogapi.service.EmailService;

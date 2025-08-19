@@ -1,6 +1,6 @@
-package com.huseynovvusal.springblogapi.eventListerners;
+package com.huseynovvusal.springblogapi.eventListener;
 
-import com.huseynovvusal.springblogapi.events.ResetPasswordEvent;
+import com.huseynovvusal.springblogapi.events.ForgotPasswordEvent;
 import com.huseynovvusal.springblogapi.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -9,12 +9,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ResetPasswordEventListener {
+public class ForgotPasswordEventListener {
     private final EmailService emailService;
-
     @EventListener
     @Async
-    public void handleResetPasswordEmail(ResetPasswordEvent event){
-        emailService.sendPasswordResetSuccess(event.getUser());
+    public void handleForgotPasswordEvent(ForgotPasswordEvent event){
+        emailService.sendPasswordResetToken(event.getUser(), event.getResetLink());
     }
 }
