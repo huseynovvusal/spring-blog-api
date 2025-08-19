@@ -28,7 +28,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.login(request));
     }
 
-    @PostMapping("api/auth/forgot-password")
+    @PostMapping("/api/auth/forgot-password")
     public ResponseEntity<ForgotPasswordResponse> getPasswordResetLink(@Valid @RequestBody ForgotPasswordRequest request){
         return ResponseEntity.ok(authenticationService.generatePasswordResetToken(request));
     }
