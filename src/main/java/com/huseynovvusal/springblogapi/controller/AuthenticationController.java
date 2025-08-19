@@ -18,22 +18,22 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/api/register")
+    @PostMapping("/api/auth/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
-    @PostMapping("/api/login")
+    @PostMapping("/api/auth/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authenticationService.login(request));
     }
 
-    @PostMapping("api/forgot-password")
+    @PostMapping("/api/auth/forgot-password")
     public ResponseEntity<ForgotPasswordResponse> getPasswordResetLink(@Valid @RequestBody ForgotPasswordRequest request){
         return ResponseEntity.ok(authenticationService.generatePasswordResetToken(request));
     }
 
-    @PostMapping("api/reset-password")
+    @PostMapping("api/auth/reset-password")
     public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request){
         return ResponseEntity.ok(authenticationService.verifyAndResetPassword(request));
     }
