@@ -3,7 +3,7 @@
 Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful backend service for managing blog posts and user authentication, built with Spring Boot. The project is currently under active development and new features are coming soon.
 
 > **🌱 Newcomers Welcome!**
-> We encourage developers of all experience levels to contribute. Whether you're new to open source or a seasoned pro, your ideas and code are valued here. Check out our [CONTRIBUTION.md](CONTRIBUTION.md) for easy ways to get started!
+> We encourage developers of all experience levels to contribute. Whether you're new to open source or a seasoned pro, your ideas and code are valued here. Check out our [CONTRIBUTING.md](CONTRIBUTING.md) for easy ways to get started!
 
 ## 🛠️ Technologies Used
 - Java 24
@@ -53,7 +53,7 @@ Edit `src/main/resources/application.yml` to configure database and other settin
 API endpoints and documentation will be provided as development progresses.
 
 ## 🤝 Contributing
-See [CONTRIBUTION.md](CONTRIBUTION.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📄 License
 This project is licensed under the MIT License.
