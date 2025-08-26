@@ -45,4 +45,15 @@ public class BlogController {
     public ResponseEntity<BlogResponseDto> create(@RequestBody CreateBlog body) {
         return ResponseEntity.ok(blogService.create(body));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<BlogResponseDto>> search(
+            @RequestParam(value = "q", required = false) String q,
+            @RequestParam(value = "tag", required = false) String tag,
+            @PageableDefault(size = 20,
+                    sort = "createdAt",
+                    direction = org.springframework.data.domain.Sort.Direction.DESC)
+            Pageable pageable) {
+        return ResponseEntity.ok(blogService.search(q, tag, pageable));
+    }
 }

@@ -6,6 +6,7 @@ Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful b
 > We encourage developers of all experience levels to contribute. Whether you're new to open source or a seasoned pro, your ideas and code are valued here. Check out our [CONTRIBUTING.md](CONTRIBUTING.md) for easy ways to get started!
 
 ## 🛠️ Technologies Used
+
 - Java 24
 - Spring Boot 3.5
 - Spring Security
@@ -23,11 +24,13 @@ Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful b
 ## ⚡ Getting Started
 
 ### Prerequisites
+
 - Java 24
 - Docker (optional, for containerization)
 - Gradle
 
 ### 🚦 Setup
+
 1. Clone the repository:
    ```bash
    git clone <repository-url>
@@ -47,16 +50,52 @@ Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful b
    ```
 
 ### ⚙️ Configuration
+
 Edit `src/main/resources/application.yml` to configure database and other settings.
 
 ## 📖 API Documentation
-API endpoints and documentation will be provided as development progresses.
+
+### Search API
+
+Search blog posts by keyword in title/content and by tag. Results are paginated.
+
+Endpoint:
+
+```
+GET /api/blogs/search?q=<keyword>&tag=<tag>&page=<n>&size=<n>&sort=createdAt,desc
+```
+
+Query params:
+
+- `q` (optional): keyword to match in title or content (case-insensitive)
+- `tag` (optional): exact tag match (case-insensitive)
+- `page`, `size`, `sort`: standard Spring pagination params
+
+Example:
+
+```
+GET /api/blogs/search?q=spring&tag=java&size=10
+```
+
+Create blog with tags:
+
+```
+POST /api/blogs
+{
+  "title": "Intro to Spring",
+  "content": "...",
+  "tags": ["spring", "java"]
+}
+```
 
 ## 🤝 Contributing
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📄 License
+
 This project is licensed under the MIT License.
 
 ## 🚧 Status
+
 **This project is in active development and not yet complete. Features and documentation may change.**

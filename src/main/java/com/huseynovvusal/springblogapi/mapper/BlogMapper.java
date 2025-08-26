@@ -15,7 +15,8 @@ public final class BlogMapper {
                 blog.getContent(),
                 blog.getCreatedAt(),
                 blog.getUpdatedAt(),
-                toUserSummary(blog.getAuthor())
+                toUserSummary(blog.getAuthor()),
+                blog.getTags()
         );
     }
 
