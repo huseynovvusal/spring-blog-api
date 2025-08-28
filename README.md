@@ -41,9 +41,9 @@ Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful b
    ```bash
    ./gradlew bootRun
    ```
-4. (Optional) Run with Docker:
+4. Run Docker:
    ```bash
-   docker-compose up --build
+   docker-compose up
    ```
 
 ### ⚙️ Configuration
