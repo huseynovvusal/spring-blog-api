@@ -7,8 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/blogs")
@@ -45,4 +51,18 @@ public class BlogController {
     public ResponseEntity<BlogResponseDto> create(@RequestBody CreateBlog body) {
         return ResponseEntity.ok(blogService.create(body));
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Page<BlogResponseDto>> filter(
+            @RequestParam(required = false) List<String> tags,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant createdFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant createdTo,
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false, defaultValue = "false") Boolean onlyPublished,
+            @PageableDefault(size = 20) Pageable pageable
+    ) {
+        return ResponseEntity.ok(blogService.filter(tags, author, createdFrom, createdTo, q, onlyPublished, pageable));
+    }
+
 }

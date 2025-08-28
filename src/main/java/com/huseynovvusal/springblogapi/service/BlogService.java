@@ -9,10 +9,11 @@ import com.huseynovvusal.springblogapi.repository.BlogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import static com.huseynovvusal.springblogapi.service.BlogSpecifications.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -42,4 +43,23 @@ public class BlogService {
         Blog saved = blogRepository.save(b);
         return BlogMapper.toDto(saved);
     }
+    public Page<BlogResponseDto> filter(
+            List<String> tags,
+            String authorUsername,
+            Instant createdFrom,
+            Instant createdTo,
+            String q,
+            Boolean onlyPublished, Pageable pageable
+    ) {
+        Specification<Blog> spec = Specification.allOf(
+                hasAuthorUsername(authorUsername),
+                createdBetween(createdFrom, createdTo),
+                titleContains(q),
+                hasAnyTag(tags)
+        );
+
+        return blogRepository.findAll(spec, pageable)
+                .map(BlogMapper::toDto);
+    }
+
 }

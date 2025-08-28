@@ -36,4 +36,11 @@ public class Blog {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "blog_tags", joinColumns = @JoinColumn(name = "blog_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private java.util.Set<Tag> tags = new java.util.HashSet<>();
+
+    @Column(nullable = false)
+    private long views = 0L;
 }
