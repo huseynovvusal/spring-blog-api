@@ -38,8 +38,17 @@ public class BlogService {
         Blog b = new Blog();
         b.setTitle(request.getTitle());
         b.setContent(request.getContent());
+        if (request.getTags() != null) {
+            b.getTags().addAll(request.getTags());
+        }
         b.setAuthor(current);
         Blog saved = blogRepository.save(b);
         return BlogMapper.toDto(saved);
+    }
+
+    public Page<BlogResponseDto> search(String q, String tag, Pageable pageable) {
+        String query = (q == null || q.isBlank()) ? null : q;
+        String tagFilter = (tag == null || tag.isBlank()) ? null : tag;
+        return blogRepository.search(query, tagFilter, pageable).map(BlogMapper::toDto);
     }
 }

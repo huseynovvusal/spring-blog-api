@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "blogs")
@@ -24,6 +26,11 @@ public class Blog {
     @Lob
     @Column(nullable = false)
     private String content;
+
+    @ElementCollection
+    @CollectionTable(name = "blog_tags", joinColumns = @JoinColumn(name = "blog_id"))
+    @Column(name = "tag")
+    private Set<String> tags = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id")
