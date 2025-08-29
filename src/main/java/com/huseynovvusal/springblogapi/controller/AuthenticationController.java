@@ -11,31 +11,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("register")
+    @PostMapping("/api/auth/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
-    @PostMapping("login")
+    @PostMapping("/api/auth/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authenticationService.login(request));
     }
 
-    @PostMapping("forgot-password")
+    @PostMapping("/api/auth/forgot-password")
     public ResponseEntity<ForgotPasswordResponse> getPasswordResetLink(@Valid @RequestBody ForgotPasswordRequest request){
         return ResponseEntity.ok(authenticationService.generatePasswordResetToken(request));
     }
 
-    @PostMapping("reset-password")
+    @PostMapping("api/auth/reset-password")
     public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request){
         return ResponseEntity.ok(authenticationService.verifyAndResetPassword(request));
     }
