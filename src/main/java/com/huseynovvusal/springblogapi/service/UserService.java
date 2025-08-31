@@ -3,34 +3,46 @@ package com.huseynovvusal.springblogapi.service;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
+/**
+ * Service for accessing and managing user-related operations.
+ */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Retrieves the currently authenticated user from the security context.
+     *
+     * @return the current User entity
+     * @throws UsernameNotFoundException if the user is not found
+     */
     public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        System.out.println("[UserService](getCurrentUser) Current username: " + username);
-
+        log.debug("[UserService] Current username: {}", username);
         return getUserByUsername(username);
     }
 
-    public User getUserByUsername(String username) throws RuntimeException {
-        final User user = userRepository.findByUsername(username);
-
+    /**
+     * Retrieves a user by their username.
+     *
+     * @param username the username to search for
+     * @return the User entity
+     * @throws UsernameNotFoundException if the user is not found
+     */
+    public User getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            log.warn("User not found with username: {}", username);
+            throw new UsernameNotFoundException("User not found: " + username);
         }
-
         return user;
     }
-
 }

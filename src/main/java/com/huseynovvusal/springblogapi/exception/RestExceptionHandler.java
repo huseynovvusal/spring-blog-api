@@ -16,9 +16,20 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+/**
+ * Global exception handler for REST API.
+ * Converts various exceptions into structured {@link ErrorResponseDto} responses.
+ */
 @RestControllerAdvice
 public class RestExceptionHandler {
 
+    /**
+     * Handles validation errors from @Valid annotated request bodies.
+     *
+     * @param ex  the validation exception
+     * @param req the HTTP request
+     * @return structured error response with field-level messages
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
@@ -40,6 +51,13 @@ public class RestExceptionHandler {
                 .build();
     }
 
+    /**
+     * Handles cases where a requested resource is not found.
+     *
+     * @param ex  the exception indicating missing data
+     * @param req the HTTP request
+     * @return structured 404 error response
+     */
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponseDto handleNotFound(NoSuchElementException ex, HttpServletRequest req) {
@@ -52,6 +70,13 @@ public class RestExceptionHandler {
                 .build();
     }
 
+    /**
+     * Handles access denied exceptions for unauthorized actions.
+     *
+     * @param ex  the access denied exception
+     * @param req the HTTP request
+     * @return structured 403 error response
+     */
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponseDto handleForbidden(AccessDeniedException ex, HttpServletRequest req) {
@@ -64,6 +89,13 @@ public class RestExceptionHandler {
                 .build();
     }
 
+    /**
+     * Handles authentication failures such as invalid credentials.
+     *
+     * @param ex  the authentication exception
+     * @param req the HTTP request
+     * @return structured 401 error response
+     */
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponseDto handleAuth(AuthenticationException ex, HttpServletRequest req) {
@@ -76,6 +108,13 @@ public class RestExceptionHandler {
                 .build();
     }
 
+    /**
+     * Handles failures during email sending operations.
+     *
+     * @param ex  the email failure exception
+     * @param req the HTTP request
+     * @return structured 500 error response
+     */
     @ExceptionHandler(EmailFailedException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseDto handleEmailSendingFailed(EmailFailedException ex, HttpServletRequest req) {
@@ -88,6 +127,13 @@ public class RestExceptionHandler {
                 .build();
     }
 
+    /**
+     * Handles all other uncaught exceptions.
+     *
+     * @param ex  the generic exception
+     * @param req the HTTP request
+     * @return structured 500 error response
+     */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseDto handleGeneric(Exception ex, HttpServletRequest req) {
@@ -100,4 +146,3 @@ public class RestExceptionHandler {
                 .build();
     }
 }
-
