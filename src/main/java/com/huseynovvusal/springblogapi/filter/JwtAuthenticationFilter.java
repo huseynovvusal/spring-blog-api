@@ -19,6 +19,10 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Filter that intercepts incoming HTTP requests to validate JWT tokens.
+ * If a valid token is found, it sets the authentication context for the current user.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -27,13 +31,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final HandlerExceptionResolver handlerExceptionResolver;
 
+    /**
+     * Extracts and validates JWT from the Authorization header.
+     * If valid, sets the authentication context for the request.
+     *
+     * @param request     the incoming HTTP request
+     * @param response    the HTTP response
+     * @param filterChain the filter chain to continue processing
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
             String authHeader = request.getHeader("Authorization");
+
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                log.debug("No Authorization header or invalid format");
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -41,11 +57,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
 
             if (!jwtService.isTokenValid(token)) {
+                log.debug("Invalid JWT token");
                 filterChain.doFilter(request, response);
                 return;
             }
 
             if (SecurityContextHolder.getContext().getAuthentication() != null) {
+                log.debug("Authentication already exists in context");
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -58,11 +76,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             var principal = new UserPrincipal(userId, username, authorities);
             var authToken = new UsernamePasswordAuthenticationToken(principal, null, authorities);
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
             SecurityContextHolder.getContext().setAuthentication(authToken);
+            log.debug("JWT authentication set for user: {}", username);
 
             filterChain.doFilter(request, response);
         } catch (Exception e) {
-            log.debug("JWT filter caught exception: {}", e.getMessage());
+            log.error("JWT filter encountered an exception", e);
             handlerExceptionResolver.resolveException(request, response, null, e);
         }
     }

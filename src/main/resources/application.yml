@@ -39,6 +39,10 @@ logging:
     org:
       springframework:
         security: DEBUG
+  file:
+    name: logs/spring-blog-api.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
 security:
   jwt:
