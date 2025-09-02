@@ -26,6 +26,30 @@ services:
     depends_on:
       - postgres
 
+  mailhog:
+    image: mailhog/mailhog
+    container_name: spring_blog_mailhog
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+
+  api:
+    build: .
+    container_name: spring_blog_api
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+      - mailhog
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/spring_blog_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_MAIL_HOST=mailhog
+      - SPRING_MAIL_PORT=1025
+      - SPRING_MAIL_USERNAME:mailuser
+      - SPRING_MAIL_PASSWORD:mailpass
+
 networks:
   default:
     driver: bridge
