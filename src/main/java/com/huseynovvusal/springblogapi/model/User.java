@@ -55,6 +55,12 @@ public class User {
     private String password;
 
     /**
+     * Indicates whether the user account is blocked.
+     */
+    @Column(nullable = false)
+    private boolean isBlocked = false;
+
+    /**
      * Role assigned to the user (e.g., USER, ADMIN).
      */
     @Enumerated(EnumType.STRING)

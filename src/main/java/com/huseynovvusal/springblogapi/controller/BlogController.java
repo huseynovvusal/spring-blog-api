@@ -21,7 +21,7 @@ import java.util.List;
  * Supports CRUD operations and filtering based on tags, author, and creation date.
  */
 @RestController
-@RequestMapping("blogs")
+@RequestMapping("/blogs")
 @RequiredArgsConstructor
 public class BlogController {
 
