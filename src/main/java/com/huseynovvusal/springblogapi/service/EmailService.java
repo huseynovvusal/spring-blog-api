@@ -93,7 +93,9 @@ public class EmailService {
      */
     private String loadTemplate(String path) throws IOException {
         ClassPathResource resource = new ClassPathResource(path);
-        return Files.readString(resource.getFile().toPath(), StandardCharsets.UTF_8);
+        try (var in = resource.getInputStream()) {
+            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        }
     }
 
     /**

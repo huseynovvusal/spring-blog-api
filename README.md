@@ -37,14 +37,14 @@ Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful b
    ```bash
    ./gradlew build
    ```
-3. Run the application:
-   ```bash
-   ./gradlew bootRun
-   ```
-4. Run Docker:
+3. Run Docker:
    ```bash
    docker-compose up
    ```
+4. Use the API service on:
+   ```
+   http://localhost:8082/api/v1/
+   ``` 
 
 ### ⚙️ Configuration
 Edit `src/main/resources/application.yml` to configure database and other settings.

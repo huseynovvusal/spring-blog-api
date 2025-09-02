@@ -9,9 +9,9 @@ spring:
   config:
     import: optional:file:.env[.properties]
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/testdb}
-    username: ${SPRING_DATASOURCE_USERNAME:testuser}
-    password: ${SPRING_DATASOURCE_PASSWORD:testpass}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/spring_blog_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   jpa:
     show_sql: true
@@ -46,7 +46,7 @@ logging:
 
 security:
   jwt:
-    secret_key: ${JWT_SECRET_KEY:testsecret}
+    secret_key: ${JWT_SECRET_KEY:yQw1nQw8w6v7v8QkQk9pQk3vQk2pQk1nQk0pQk9nQk8pQk7vQk6pQk5nQk4pQk3v}
     expiration_time: ${JWT_EXPIRATION_TIME:3600000}
 
 client:
