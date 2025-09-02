@@ -22,7 +22,7 @@ spring:
 
 security:
   jwt:
-    secret_key: testsecret
+    secret_key: yQw1nQw8w6v7v8QkQk9pQk3vQk2pQk1nQk0pQk9nQk8pQk7vQk6pQk5nQk4pQk3v
     expiration_time: 3600000
 
 client:
