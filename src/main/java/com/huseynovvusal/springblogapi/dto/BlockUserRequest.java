@@ -7,12 +7,12 @@ import lombok.Data;
 @AllArgsConstructor
 public class BlockUserRequest {
     /**
-     * Desired username for the account.
+     * Username for the account.
      */
     private String username;
 
     /**
-     * Password chosen by the user.
+     * Indicates whether the user is blocked.
      */
     private Boolean isBlocked;
 }

@@ -7,7 +7,6 @@ import com.huseynovvusal.springblogapi.dto.BlockUserRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.cglib.core.Block;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -57,10 +56,6 @@ public class UserService {
 
     public BlockUserResponse changeBlockStatus(BlockUserRequest request) {
         User user = getUserByUsername(request.getUsername());
-        if (user == null) {
-            log.error("User not found with username: {}", request.getUsername());
-            throw new UsernameNotFoundException("User not found: " + request.getUsername());
-        }
         user.setBlocked(request.getIsBlocked());
         userRepository.save(user);
         BlockUserResponse response = new BlockUserResponse();

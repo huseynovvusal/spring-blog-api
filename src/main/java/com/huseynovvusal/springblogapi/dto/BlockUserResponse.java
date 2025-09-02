@@ -19,7 +19,7 @@ public class BlockUserResponse {
     private String lastName;
 
     /**
-     * Desired username for the account.
+     * Username for the account.
      */
     private String username;
 
@@ -29,7 +29,7 @@ public class BlockUserResponse {
     private String email;
 
     /**
-     * Password chosen by the user.
+     * Indicates whether the user account is blocked.
      */
     private Boolean isBlocked;
 }
