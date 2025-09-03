@@ -52,3 +52,9 @@ security:
 client:
   app:
     url: ${CLIENT_APP_URL:http://localhost:3000}
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html

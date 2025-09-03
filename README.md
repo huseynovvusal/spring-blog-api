@@ -51,32 +51,11 @@ Edit `src/main/resources/application.yml` to configure database and other settin
 
 ## 📖 API Documentation
 
-### 🔖 Bookmarks / Favorites
+Interactive API documentation is available via Swagger UI.  
+**Most requests require an `Authorization: Bearer <JWT>` header.**
 
-Authenticated users can bookmark their favorite blog posts for quick access.
+**`http://localhost:8082/api/v1/swagger-ui/index.html#/`**
 
-#### Endpoints
-All requests require an `Authorization: Bearer <JWT>` header.
-
-- **Add bookmark** (idempotent)  
-  `POST /api/bookmarks/{blogId}`  
-  → `204 No Content`
-
-- **Check if bookmarked**  
-  `GET /api/bookmarks/check?blogId={blogId}`  
-  → `true | false`
-
-- **List my bookmarks** (paged)  
-  `GET /api/bookmarks?page=0&size=10&sort=createdAt,desc`  
-  → returns a page of `BlogResponseDto`
-
-- **Toggle bookmark**  
-  `POST /api/bookmarks/{blogId}/toggle`  
-  → `true` (added) or `false` (removed)
-
-- **Remove bookmark** (idempotent)  
-  `DELETE /api/bookmarks/{blogId}`  
-  → `204 No Content`
 
 #### Notes
 - Duplicate prevention is enforced by a unique database constraint `(user_id, blog_id)` and idempotent service logic.
