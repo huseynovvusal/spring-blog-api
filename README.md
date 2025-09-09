@@ -6,6 +6,7 @@ Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful b
 > We encourage developers of all experience levels to contribute. Whether you're new to open source or a seasoned pro, your ideas and code are valued here. Check out our [CONTRIBUTING.md](CONTRIBUTING.md) for easy ways to get started!
 
 ## 🛠️ Technologies Used
+
 - Java 24
 - Spring Boot 3.5
 - Spring Security
@@ -23,11 +24,13 @@ Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful b
 ## ⚡ Getting Started
 
 ### Prerequisites
+
 - Java 24
 - Docker (optional, for containerization)
 - Gradle
 
 ### 🚦 Setup
+
 1. Clone the repository:
    ```bash
    git clone <repository-url>
@@ -44,9 +47,10 @@ Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful b
 4. Use the API service on:
    ```
    http://localhost:8082/api/v1/
-   ``` 
+   ```
 
 ### ⚙️ Configuration
+
 Edit `src/main/resources/application.yml` to configure database and other settings.
 
 ## 📖 API Documentation
@@ -56,20 +60,22 @@ Interactive API documentation is available via Swagger UI.
 
 **`http://localhost:8082/api/v1/swagger-ui/index.html#/`**
 
-
 #### Notes
+
 - Duplicate prevention is enforced by a unique database constraint `(user_id, blog_id)` and idempotent service logic.
 - The current user is resolved from the JWT claim `uid`.
 - Error codes:
-    - `401 Unauthorized` — missing/expired token
-    - `404 Not Found` — blog does not exist
-
+  - `401 Unauthorized` — missing/expired token
+  - `404 Not Found` — blog does not exist
 
 ## 🤝 Contributing
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📄 License
+
 This project is licensed under the MIT License.
 
 ## 🚧 Status
+
 **This project is in active development and not yet complete. Features and documentation may change.**

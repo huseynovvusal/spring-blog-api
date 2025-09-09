@@ -30,7 +30,7 @@ public class AuthenticationController {
      * @return a response entity with registration status and user info
      */
     @PostMapping("register")
-    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
         logger.info("Received registration request for email: {}", request.getEmail());
         RegisterResponse response = authenticationService.register(request);
         logger.debug("Registration successful for email: {}, response: {}", request.getEmail(), response);
@@ -44,7 +44,7 @@ public class AuthenticationController {
      * @return a response entity with authentication token and user info
      */
     @PostMapping("login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         logger.info("Login attempt for username: {}", request.getUsername());
         LoginResponse response = authenticationService.login(request);
         logger.debug("Login successful for username: {}, response: {}", request.getUsername(), response);
