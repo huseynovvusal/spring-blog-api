@@ -12,6 +12,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.time.Instant;
 import java.util.List;
@@ -77,7 +78,7 @@ public class BlogController {
      * @return the created blog response
      */
     @PostMapping
-    public ResponseEntity<BlogResponseDto> create(@RequestBody CreateBlog body) {
+    public ResponseEntity<BlogResponseDto> create(@Valid @RequestBody CreateBlog body) {
         logger.info("Creating new blog with title: {}", body.getTitle());
         return ResponseEntity.ok(blogService.create(body));
     }
