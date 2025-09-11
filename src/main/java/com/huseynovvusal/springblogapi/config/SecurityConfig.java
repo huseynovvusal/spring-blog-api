@@ -2,6 +2,7 @@ package com.huseynovvusal.springblogapi.config;
 
 import com.huseynovvusal.springblogapi.filter.JwtAuthenticationFilter;
 import com.huseynovvusal.springblogapi.filter.BlockedUserFilter;
+import com.huseynovvusal.springblogapi.filter.DatabaseHealthFilter;
 import com.huseynovvusal.springblogapi.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final BlockedUserFilter blockedUserFilter;
+    private final DatabaseHealthFilter databaseHealthFilter;
 
     /**
      * Configures the security filter chain for HTTP requests.
@@ -62,6 +64,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(blockedUserFilter, JwtAuthenticationFilter.class)
+                .addFilterAfter(databaseHealthFilter, BlockedUserFilter.class)
                 .build();
     }
 

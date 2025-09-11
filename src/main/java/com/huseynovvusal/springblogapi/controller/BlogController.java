@@ -3,6 +3,7 @@ package com.huseynovvusal.springblogapi.controller;
 import com.huseynovvusal.springblogapi.dto.CreateBlog;
 import com.huseynovvusal.springblogapi.dto.response.BlogResponseDto;
 import com.huseynovvusal.springblogapi.service.BlogService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ public class BlogController {
      * @return the blog response
      */
     @GetMapping("/{id}")
+    @RateLimiter(name = "default")
     public ResponseEntity<BlogResponseDto> getById(@PathVariable Long id) {
         logger.info("Fetching blog with ID: {}", id);
         return ResponseEntity.ok(blogService.getById(id));

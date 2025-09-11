@@ -1,0 +1,91 @@
+### Create Blog Post API Test (Authentication Required)
+POST http://localhost:8082/api/v1/blogs
+Content-Type: application/json
+
+{
+  "title": "My First Blog Post",
+  "content": "This is a test blog post for API testing.",
+  "tags": ["test", "Spring Boot", "API"],
+  "isPublished": true
+}
+
+### Create Blog Post API Test
+POST http://localhost:8082/api/v1/blogs
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "title": "Spring Boot Tutorial",
+  "content": "This is a comprehensive tutorial about Spring Boot framework.",
+  "tags": ["tutorial", "Spring Boot", "Java"],
+  "isPublished": true
+}
+
+### Create Blog Post API Test (Draft)
+POST http://localhost:8082/api/v1/blogs
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "title": "Draft Blog Post",
+  "content": "This is an unpublished draft blog post.",
+  "tags": ["draft", "development"],
+  "isPublished": false
+}
+
+### Get All Blog Posts API Test
+GET http://localhost:8082/api/v1/blogs?page=0&size=10
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Get Blog Posts by Author API Test
+GET http://localhost:8082/api/v1/blogs/author/johndoe?page=0&size=10
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Filter Blog Posts API Test (By Tags)
+GET http://localhost:8082/api/v1/blogs/filter?tags=test&page=0&size=10
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Filter Blog Posts API Test (By Author)
+GET http://localhost:8082/api/v1/blogs/filter?author=johndoe&page=0&size=10
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Filter Blog Posts API Test (By Search Query)
+GET http://localhost:8082/api/v1/blogs/filter?q=Spring&page=0&size=10
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Filter Blog Posts API Test (Published Only)
+GET http://localhost:8082/api/v1/blogs/filter?onlyPublished=true&page=0&size=10
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Get Specific Blog Post API Test (Replace ID with actual blog ID)
+GET http://localhost:8082/api/v1/blogs/1
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Invalid Blog Creation Test (Missing Title)
+POST http://localhost:8082/api/v1/blogs
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "content": "Blog post without title",
+  "tags": ["test"],
+  "isPublished": true
+}
+
+### Invalid Blog Creation Test (Missing Content)
+POST http://localhost:8082/api/v1/blogs
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "title": "Blog post without content",
+  "tags": ["test"],
+  "isPublished": true
+}

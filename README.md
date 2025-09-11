@@ -20,6 +20,7 @@ Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful b
 - Docker & Docker Compose
 - JUnit 5
 - PgAdmin
+- **Resilience4j** (Rate Limiting & Circuit Breaker)
 
 ## ⚡ Getting Started
 
@@ -67,6 +68,21 @@ Interactive API documentation is available via Swagger UI.
 - Error codes:
   - `401 Unauthorized` — missing/expired token
   - `404 Not Found` — blog does not exist
+
+## 🛡️ Rate Limiting & Circuit Breaker
+
+This API implements robust rate limiting and circuit breaker patterns to protect against abuse and service failures:
+
+### Rate Limiting
+
+- **Default API endpoints**: 20 requests/60 seconds
+- **Authentication endpoints**: 5 requests/60 seconds
+
+### Circuit Breaker
+
+- Automatic database failure detection
+- Service degradation during outages
+- Graceful error responses (503 Service Unavailable)
 
 ## 🤝 Contributing
 
