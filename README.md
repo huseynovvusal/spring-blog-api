@@ -20,7 +20,7 @@ Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful b
 - Docker & Docker Compose
 - JUnit 5
 - PgAdmin
-- **Resilience4j** (Rate Limiting & Circuit Breaker)
+- Resilience4j (Rate Limiting & Circuit Breaker)
 
 ## ⚡ Getting Started
 
