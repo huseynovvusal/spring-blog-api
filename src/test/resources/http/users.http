@@ -1,0 +1,87 @@
+### User Registration API Test
+POST http://localhost:8082/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+> {%
+client.global.set("jwt_token", response.body.token);
+%}
+
+### User Login API Test
+POST http://localhost:8082/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "password123"
+}
+
+> {%
+client.global.set("jwt_token", response.body.token);
+%}
+
+### Forgot Password API Test
+POST http://localhost:8082/api/v1/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "john@example.com"
+}
+
+### Reset Password API Test (Token should be obtained from actual email)
+POST http://localhost:8082/api/v1/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "your-reset-token-here",
+  "newPassword": "newpassword123"
+}
+
+### Invalid User Registration Test (Invalid Email Format)
+POST http://localhost:8082/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "username": "testuser",
+  "email": "invalid-email",
+  "password": "password123"
+}
+
+### Invalid User Registration Test (Username Too Short)
+POST http://localhost:8082/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "username": "ab",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Invalid Login Test (Non-existent User)
+POST http://localhost:8082/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "nonexistent",
+  "password": "password123"
+}
+
+### Invalid Login Test (Wrong Password)
+POST http://localhost:8082/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "wrongpassword"
+}

@@ -58,3 +58,34 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+resilience4j:
+  ratelimiter:
+    configs:
+      default:
+        limit-for-period: 20
+        limit-refresh-period: 60s
+        timeout-duration: 1s
+      auth:
+        limit-for-period: 5
+        limit-refresh-period: 60s
+        timeout-duration: 1s
+    instances:
+      default:
+        base-config: default
+      auth:
+        base-config: auth
+      blog:
+        base-config: default
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 10
+        sliding-window-type: count_based
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 2
+        max-wait-duration-in-half-open-state: 10s
+        slow-call-duration-threshold: 10s
+    instances:
+      default:
+        base-config: default

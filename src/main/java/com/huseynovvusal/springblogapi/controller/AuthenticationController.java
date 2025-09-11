@@ -4,6 +4,7 @@ import com.huseynovvusal.springblogapi.dto.*;
 import com.huseynovvusal.springblogapi.dto.response.ForgotPasswordResponse;
 import com.huseynovvusal.springblogapi.dto.response.ResetPasswordResponse;
 import com.huseynovvusal.springblogapi.service.AuthenticationService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ public class AuthenticationController {
      * @return a response entity with registration status and user info
      */
     @PostMapping("register")
+    @RateLimiter(name = "auth")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
         logger.info("Received registration request for email: {}", request.getEmail());
         RegisterResponse response = authenticationService.register(request);
@@ -44,6 +46,7 @@ public class AuthenticationController {
      * @return a response entity with authentication token and user info
      */
     @PostMapping("login")
+    @RateLimiter(name = "auth")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         logger.info("Login attempt for username: {}", request.getUsername());
         LoginResponse response = authenticationService.login(request);

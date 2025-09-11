@@ -1,6 +1,7 @@
 package com.huseynovvusal.springblogapi.exception;
 
 import com.huseynovvusal.springblogapi.dto.response.ErrorResponseDto;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -198,6 +199,25 @@ public class RestExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message("Malformed JSON request")
+                .build();
+    }
+
+    /**
+     * Handles rate limiting violations.
+     *
+     * @param ex  the rate limiting exception
+     * @param req the HTTP request
+     * @return structured 429 error response
+     */
+    @ExceptionHandler(RequestNotPermitted.class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public ErrorResponseDto handleRateLimit(RequestNotPermitted ex, HttpServletRequest req) {
+        return ErrorResponseDto.builder()
+                .timestamp(Instant.now())
+                .path(req.getRequestURI())
+                .status(HttpStatus.TOO_MANY_REQUESTS.value())
+                .error(HttpStatus.TOO_MANY_REQUESTS.getReasonPhrase())
+                .message("Rate limit exceeded. Please try again later.")
                 .build();
     }
 

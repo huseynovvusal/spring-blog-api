@@ -4,6 +4,7 @@ import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.UserRepository;
 import com.huseynovvusal.springblogapi.dto.BlockUserResponse;
 import com.huseynovvusal.springblogapi.dto.BlockUserRequest;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,6 +46,7 @@ public class UserService {
      * @return the User entity
      * @throws UsernameNotFoundException if the user is not found
      */
+    @CircuitBreaker(name = "default")
     public User getUserByUsername(String username) {
         User user = userRepository.findByUsername(username);
         if (user == null) {
