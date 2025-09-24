@@ -12,6 +12,7 @@ import com.huseynovvusal.springblogapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -121,6 +122,7 @@ public class AuthenticationService {
      * @param request the reset password request containing token and new password
      * @return a response confirming the password reset
      */
+    @CacheEvict(value = "users", key = "#username")
     public ResetPasswordResponse verifyAndResetPassword(ResetPasswordRequest request) {
         log.info("Verifying reset token and updating password");
 

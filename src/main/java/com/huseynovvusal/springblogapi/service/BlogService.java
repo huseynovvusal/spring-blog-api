@@ -8,6 +8,8 @@ import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.BlogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -37,6 +39,7 @@ public class BlogService {
      * @param pageable pagination and sorting information
      * @return a page of blog response DTOs
      */
+    @Cacheable(value = "blogs", key = "#pageable")
     public Page<BlogResponseDto> getAllBlogs(Pageable pageable) {
         log.debug("Fetching all blogs with pagination: {}", pageable);
         return blogRepository.findAll(pageable).map(BlogMapper::toDto);
@@ -49,6 +52,7 @@ public class BlogService {
      * @return the corresponding blog response DTO
      * @throws NoSuchElementException if the blog is not found
      */
+    @Cacheable(value = "blog", key = "#id")
     public BlogResponseDto getById(Long id) {
         log.debug("Fetching blog by ID: {}", id);
         Blog blog = blogRepository.findById(id)
@@ -66,6 +70,7 @@ public class BlogService {
      * @param pageable pagination information
      * @return a page of blog response DTOs
      */
+    @Cacheable(value = "blogsByAuthor", key = "{#username, #pageable}")
     public Page<BlogResponseDto> getByAuthor(String username, Pageable pageable) {
         log.debug("Fetching blogs by author: {}", username);
         User author = userService.getUserByUsername(username);
@@ -78,6 +83,7 @@ public class BlogService {
      * @param request the blog creation request
      * @return the created blog response DTO
      */
+    @CacheEvict(value = {"blogs", "blogsByAuthor"}, allEntries = true)
     public BlogResponseDto create(CreateBlog request) {
         User currentUser = userService.getCurrentUser();
         log.info("Creating blog for user: {}", currentUser.getUsername());
@@ -105,6 +111,7 @@ public class BlogService {
      * @param pageable      pagination information
      * @return a page of filtered blog response DTOs
      */
+    @Cacheable(value = "filteredBlogs", key = "{#tags, #authorUsername, #createdFrom, #createdTo, #q, #onlyPublished, #pageable}")
     public Page<BlogResponseDto> filter(
             List<String> tags,
             String authorUsername,

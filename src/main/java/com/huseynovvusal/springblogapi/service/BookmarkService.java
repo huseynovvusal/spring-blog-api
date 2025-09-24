@@ -11,6 +11,8 @@ import com.huseynovvusal.springblogapi.security.SecurityUtils;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BookmarkService {
+public class BookmarkService implements SecurityAwareService {
 
     private final BookmarkRepository bookmarkRepository;
     private final BlogRepository blogRepository;
@@ -36,8 +38,9 @@ public class BookmarkService {
      * @param blogId the ID of the blog to bookmark
      */
     @Transactional
+    @CacheEvict(value = "myBookmarks", key = "#root.target.currentUserId()")
     public void addBookmark(Long blogId) {
-        Long userId = SecurityUtils.currentUserId();
+        Long userId = currentUserId();
 
         if (bookmarkRepository.existsByUser_IdAndBlog_Id(userId, blogId)) {
             log.debug("Bookmark already exists for user {} and blog {}", userId, blogId);
@@ -63,8 +66,9 @@ public class BookmarkService {
      * @param blogId the ID of the blog to unbookmark
      */
     @Transactional
+    @CacheEvict(value = "myBookmarks", key = "#root.target.currentUserId()")
     public void removeBookmark(Long blogId) {
-        Long userId = SecurityUtils.currentUserId();
+        Long userId = currentUserId();
         bookmarkRepository.deleteByUser_IdAndBlog_Id(userId, blogId);
         log.info("Bookmark removed for user {} and blog {}", userId, blogId);
     }
@@ -77,7 +81,7 @@ public class BookmarkService {
      */
     @Transactional(readOnly = true)
     public boolean isBookmarked(Long blogId) {
-        Long userId = SecurityUtils.currentUserId();
+        Long userId = currentUserId();
         return bookmarkRepository.existsByUser_IdAndBlog_Id(userId, blogId);
     }
 
@@ -88,8 +92,9 @@ public class BookmarkService {
      * @return true if now bookmarked, false if unbookmarked
      */
     @Transactional
+    @CacheEvict(value = "myBookmarks", key = "#root.target.currentUserId()")
     public boolean toggle(Long blogId) {
-        Long userId = SecurityUtils.currentUserId();
+        Long userId = currentUserId();
 
         if (bookmarkRepository.existsByUser_IdAndBlog_Id(userId, blogId)) {
             bookmarkRepository.deleteByUser_IdAndBlog_Id(userId, blogId);
@@ -112,8 +117,9 @@ public class BookmarkService {
      * @return a page of blog response DTOs
      */
     @Transactional(readOnly = true)
+    @Cacheable(value = "myBookmarks", key = "#root.target.currentUserId()")
     public Page<BlogResponseDto> listMyBookmarks(Pageable pageable) {
-        Long userId = SecurityUtils.currentUserId();
+        Long userId = currentUserId();
         return bookmarkRepository.findAllByUser_Id(userId, pageable)
                 .map(Bookmark::getBlog)
                 .map(BlogMapper::toDto);
