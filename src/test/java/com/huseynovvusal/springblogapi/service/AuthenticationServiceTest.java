@@ -3,6 +3,7 @@ package com.huseynovvusal.springblogapi.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -39,12 +40,14 @@ class AuthenticationServiceTest {
   private JwtService jwtService;
   @Mock
   private AuthenticationManager authenticationManager;
+  @Mock
+  private RefreshTokenService refreshTokenService;
   private AuthenticationService authenticationService;
 
   @BeforeEach
   void setup() {
-    authenticationService = new AuthenticationService(eventPublisher, userRepository, passwordEncoder, jwtService,
-        authenticationManager);
+  authenticationService = new AuthenticationService(eventPublisher, userRepository, passwordEncoder, jwtService,
+    authenticationManager, refreshTokenService);
   }
 
   @Test
@@ -62,6 +65,7 @@ class AuthenticationServiceTest {
     when(passwordEncoder.encode(any())).thenReturn("password");
     when(userRepository.save(any())).thenReturn(new User());
     when(jwtService.generateToken(any())).thenReturn(token);
+  when(refreshTokenService.issue(any())).thenReturn("refresh");
     doNothing().when(eventPublisher).publishEvent(any(UserRegisteredEvent.class));
 
     RegisterResponse resultRegisterResponse = authenticationService.register(request);
@@ -95,6 +99,7 @@ class AuthenticationServiceTest {
     when(authenticationManager.authenticate(any())).thenReturn(null);
     when(userRepository.findByUsername(any())).thenReturn(user);
     when(jwtService.generateToken(any())).thenReturn(token);
+  when(refreshTokenService.issue(any())).thenReturn("refresh");
 
     LoginResponse loginResponse = authenticationService.login(loginRequest);
 
@@ -130,6 +135,7 @@ class AuthenticationServiceTest {
     when(passwordEncoder.encode(any())).thenReturn("password");
     when(userRepository.save(any())).thenReturn(user);
     doNothing().when(eventPublisher).publishEvent(any(ResetPasswordEvent.class));
+  doNothing().when(refreshTokenService).revokeAllForUser(anyLong());
 
     ResetPasswordResponse resetPasswordResponse = authenticationService.verifyAndResetPassword(resetPasswordRequest);
 
