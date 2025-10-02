@@ -128,6 +128,7 @@ class AuthenticationServiceTest {
     ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
     String username = "username";
     User user = new User();
+    user.setId(1L);
 
     // When
     when(jwtService.extractUsername(any())).thenReturn(username);
