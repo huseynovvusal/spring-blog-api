@@ -81,4 +81,16 @@ public class AuthenticationController {
         logger.debug("Password reset completed for token: {}, response: {}", request.getToken(), response);
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * Rotates a valid refresh token into a new access token and refresh token.
+     */
+    @PostMapping("refresh")
+    @RateLimiter(name = "auth")
+    public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        logger.info("Refresh token attempt");
+        return authenticationService.refreshTokens(request.getRefreshToken())
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(401).build());
+    }
 }

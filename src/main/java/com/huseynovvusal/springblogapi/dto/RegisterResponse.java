@@ -12,8 +12,12 @@ import lombok.Data;
 public class RegisterResponse {
 
     /**
-     * The JWT or session token returned after registration.
-     * This token is used for authenticating subsequent requests.
+     * The short-lived access token (JWT).
      */
     private String token;
+
+    /**
+     * The long-lived refresh token (opaque).
+     */
+    private String refreshToken;
 }
