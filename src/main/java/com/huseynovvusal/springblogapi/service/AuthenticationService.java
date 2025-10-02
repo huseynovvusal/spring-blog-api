@@ -39,6 +39,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
 
     /**
      * Registers a new user and returns a JWT token.
@@ -59,11 +60,12 @@ public class AuthenticationService {
 
         user = userRepository.save(user);
         String token = jwtService.generateToken(user);
+        String refresh = refreshTokenService.issue(user);
 
         eventPublisher.publishEvent(new UserRegisteredEvent(user.getEmail(), user.getUsername()));
         log.debug("User registered successfully: {}", user.getUsername());
 
-        return new RegisterResponse(token);
+        return new RegisterResponse(token, refresh);
     }
 
     /**
@@ -88,10 +90,11 @@ public class AuthenticationService {
             throw new UsernameNotFoundException("User not found");
         }
 
-        String token = jwtService.generateToken(user);
+    String token = jwtService.generateToken(user);
+    String refresh = refreshTokenService.issue(user);
         log.debug("Login successful for user: {}", user.getUsername());
 
-        return new LoginResponse(token);
+    return new LoginResponse(token, refresh);
     }
 
     /**
@@ -134,11 +137,28 @@ public class AuthenticationService {
             throw new UsernameNotFoundException("User not found");
         }
 
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+    user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+    // revoke all refresh tokens after password reset
+    refreshTokenService.revokeAllForUser(user.getId());
         eventPublisher.publishEvent(new ResetPasswordEvent(user));
 
         log.debug("Password reset successful for user: {}", user.getUsername());
         return new ResetPasswordResponse("Password Reset success");
+    }
+
+    /**
+     * Use a valid refresh token to obtain new access and refresh tokens (rotation).
+     */
+    public Optional<LoginResponse> refreshTokens(String rawRefreshToken) {
+    try {
+        return refreshTokenService.rotate(rawRefreshToken)
+            .flatMap(newRefresh -> refreshTokenService.validateAndGetUser(newRefresh)
+                .map(user -> new LoginResponse(jwtService.generateToken(user), newRefresh))
+            );
+    } catch (IllegalArgumentException ex) {
+        log.warn("Invalid refresh token format: {}", ex.getMessage());
+        return Optional.empty();
+    }
     }
 }
