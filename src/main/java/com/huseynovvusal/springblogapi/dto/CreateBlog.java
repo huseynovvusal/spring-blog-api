@@ -1,6 +1,7 @@
 package com.huseynovvusal.springblogapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
@@ -14,6 +15,7 @@ public class CreateBlog {
      * Title of the blog post.
      */
     @NotBlank(message = "Title is required")
+    @Size(min=5,max=150,message="Title must be between 5 and 150 characters")
     private String title;
 
     /**
