@@ -54,13 +54,8 @@ class AuthenticationServiceTest {
   void should_return_registration_response_with_token() {
     // Given
     String token = "token";
-    RegisterRequest request = RegisterRequest.builder()
-        .email("email")
-        .lastName("lastName")
-        .username("username")
-        .firstName("firstName")
-        .build();
-
+    RegisterRequest request = new RegisterRequest("firstName", "lastName", "username", "email", "");
+    
     // When
     when(passwordEncoder.encode(any())).thenReturn("password");
     when(userRepository.save(any())).thenReturn(new User());

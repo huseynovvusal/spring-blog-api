@@ -3,15 +3,18 @@ package com.huseynovvusal.springblogapi.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Request DTO for user registration.
  * Captures essential user details required to create a new account.
  */
 @Data
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegisterRequest {
 
     /**

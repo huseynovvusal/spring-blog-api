@@ -2,6 +2,7 @@ package com.huseynovvusal.springblogapi.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Response DTO for successful user registration.
@@ -9,6 +10,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class RegisterResponse {
 
     /**
