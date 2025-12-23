@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -37,11 +36,11 @@ public class BlogController {
      * @return paginated list of blog responses
      */
     @GetMapping
-    public ResponseEntity<Page<BlogResponseDto>> getAllBlogs(
+    public Page<BlogResponseDto> getAllBlogs(
             @PageableDefault(size = 20, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC)
             Pageable pageable) {
         logger.info("Fetching all blogs with pagination: {}", pageable);
-        return ResponseEntity.ok(blogService.getAllBlogs(pageable));
+        return blogService.getAllBlogs(pageable);
     }
 
     /**
@@ -52,9 +51,9 @@ public class BlogController {
      */
     @GetMapping("/{id}")
     @RateLimiter(name = "default")
-    public ResponseEntity<BlogResponseDto> getById(@PathVariable Long id) {
+    public BlogResponseDto getById(@PathVariable Long id) {
         logger.info("Fetching blog with ID: {}", id);
-        return ResponseEntity.ok(blogService.getById(id));
+        return blogService.getById(id);
     }
 
     /**
@@ -65,12 +64,12 @@ public class BlogController {
      * @return paginated list of blog responses
      */
     @GetMapping("/author/{username}")
-    public ResponseEntity<Page<BlogResponseDto>> getByAuthor(
+    public Page<BlogResponseDto> getByAuthor(
             @PathVariable String username,
             @PageableDefault(size = 20, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC)
             Pageable pageable) {
         logger.info("Fetching blogs by author: {} with pagination: {}", username, pageable);
-        return ResponseEntity.ok(blogService.getByAuthor(username, pageable));
+        return blogService.getByAuthor(username, pageable);
     }
 
     /**
@@ -80,9 +79,9 @@ public class BlogController {
      * @return the created blog response
      */
     @PostMapping
-    public ResponseEntity<BlogResponseDto> create(@Valid @RequestBody CreateBlog body) {
+    public BlogResponseDto create(@Valid @RequestBody CreateBlog body) {
         logger.info("Creating new blog with title: {}", body.getTitle());
-        return ResponseEntity.ok(blogService.create(body));
+        return blogService.create(body);
     }
 
     /**
@@ -98,7 +97,7 @@ public class BlogController {
      * @return paginated list of filtered blog responses
      */
     @GetMapping("/filter")
-    public ResponseEntity<Page<BlogResponseDto>> filter(
+    public Page<BlogResponseDto> filter(
             @RequestParam(required = false) List<String> tags,
             @RequestParam(required = false) String author,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant createdFrom,
@@ -109,6 +108,6 @@ public class BlogController {
     ) {
         logger.info("Filtering blogs with tags: {}, author: {}, createdFrom: {}, createdTo: {}, query: {}, onlyPublished: {}",
                 tags, author, createdFrom, createdTo, q, onlyPublished);
-        return ResponseEntity.ok(blogService.filter(tags, author, createdFrom, createdTo, q, onlyPublished, pageable));
+        return blogService.filter(tags, author, createdFrom, createdTo, q, onlyPublished, pageable);
     }
 }

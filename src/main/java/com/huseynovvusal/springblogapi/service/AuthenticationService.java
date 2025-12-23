@@ -6,6 +6,8 @@ import com.huseynovvusal.springblogapi.dto.response.ResetPasswordResponse;
 import com.huseynovvusal.springblogapi.events.ForgotPasswordEvent;
 import com.huseynovvusal.springblogapi.events.ResetPasswordEvent;
 import com.huseynovvusal.springblogapi.events.UserRegisteredEvent;
+import com.huseynovvusal.springblogapi.exception.InvalidRefreshTokenException;
+import com.huseynovvusal.springblogapi.exception.UserAlreadyRegisteredException;
 import com.huseynovvusal.springblogapi.model.Role;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.UserRepository;
@@ -46,15 +48,23 @@ public class AuthenticationService {
      *
      * @param request the registration request containing user details
      * @return a response containing the generated JWT token
+     * @throws UserAlreadyRegisteredException 
      */
-    public RegisterResponse register(RegisterRequest request) {
-        log.info("Registering user: {}", request.getUsername());
+    public RegisterResponse register(RegisterRequest request) throws UserAlreadyRegisteredException {
+        
+    	String username = request.getUsername();
+		log.info("Registering user: {}", username);
 
+		String email = request.getEmail();
+		
+        checkUserAlreadyRegistered(username, email);
+        
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
+        user.setUsername(username);
+        
+		user.setEmail(email);
         user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -68,6 +78,21 @@ public class AuthenticationService {
         return new RegisterResponse(token, refresh);
     }
 
+	private void checkUserAlreadyRegistered(String username, String email) throws UserAlreadyRegisteredException {
+		
+		User userByUsername = userRepository.findByUsername(username);
+        
+        if(userByUsername != null) {
+        	throw new UserAlreadyRegisteredException(String.format("User with username %s already exists", username));
+        }
+        
+        Optional<User> userByEmail = userRepository.findByEmail(email);
+        
+        if(userByEmail.isPresent()) {
+        	throw new UserAlreadyRegisteredException(String.format("User with email %s already exists", email));
+        }
+	}
+
     /**
      * Authenticates a user and returns a JWT token.
      *
@@ -75,26 +100,30 @@ public class AuthenticationService {
      * @return a response containing the generated JWT token
      */
     public LoginResponse login(LoginRequest loginRequest) {
-        log.info("Authenticating user: {}", loginRequest.getUsername());
+        String username = loginRequest.getUsername();
+		
+        log.info("Authenticating user: {}", username);
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(),
+                        username,
                         loginRequest.getPassword()
                 )
         );
 
-        User user = userRepository.findByUsername(loginRequest.getUsername());
+        User user = userRepository.findByUsername(username);
         if (user == null) {
-            log.warn("Login failed: user not found");
-            throw new UsernameNotFoundException("User not found");
+            log.error("Login failed: user not found");
+            throw new UsernameNotFoundException(String.format("User with username %s not found", username));
         }
 
-    String token = jwtService.generateToken(user);
-    String refresh = refreshTokenService.issue(user);
-        log.debug("Login successful for user: {}", user.getUsername());
-
-    return new LoginResponse(token, refresh);
+	    String token = jwtService.generateToken(user);
+	    String refresh = refreshTokenService.issue(user);
+	    
+	    log.debug("Login successful for user: {}", user.getUsername());
+	
+	    return new LoginResponse(token, refresh);
+	    
     }
 
     /**
@@ -108,7 +137,7 @@ public class AuthenticationService {
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> {
-                    log.warn("User not found with email: {}", request.getEmail());
+                    log.error("User not found with email: {}", request.getEmail());
                     return new UsernameNotFoundException("User not found with email " + request.getEmail());
                 });
 
@@ -116,7 +145,7 @@ public class AuthenticationService {
         eventPublisher.publishEvent(new ForgotPasswordEvent(user, resetLink));
 
         log.debug("Password reset link generated for user: {}", user.getEmail());
-        return new ForgotPasswordResponse("Reset link has been sent to your registered email " + user.getEmail());
+        return new ForgotPasswordResponse(String.format("Reset link has been sent to your registered email %s", user.getEmail()));
     }
 
     /**
@@ -133,14 +162,15 @@ public class AuthenticationService {
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
-            log.warn("User not found for token username: {}", username);
+            log.error("User not found for token username: {}", username);
             throw new UsernameNotFoundException("User not found");
         }
 
-    user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
-    // revoke all refresh tokens after password reset
-    refreshTokenService.revokeAllForUser(user.getId());
+       
+        // revoke all refresh tokens after password reset
+        refreshTokenService.revokeAllForUser(user.getId());
         eventPublisher.publishEvent(new ResetPasswordEvent(user));
 
         log.debug("Password reset successful for user: {}", user.getUsername());
@@ -149,16 +179,20 @@ public class AuthenticationService {
 
     /**
      * Use a valid refresh token to obtain new access and refresh tokens (rotation).
+     * @throws InvalidRefreshTokenException 
      */
-    public Optional<LoginResponse> refreshTokens(String rawRefreshToken) {
-    try {
-        return refreshTokenService.rotate(rawRefreshToken)
-            .flatMap(newRefresh -> refreshTokenService.validateAndGetUser(newRefresh)
-                .map(user -> new LoginResponse(jwtService.generateToken(user), newRefresh))
-            );
-    } catch (IllegalArgumentException ex) {
-        log.warn("Invalid refresh token format: {}", ex.getMessage());
-        return Optional.empty();
-    }
+    public LoginResponse refreshTokens(String rawRefreshToken) throws InvalidRefreshTokenException {
+	       
+    	Optional<LoginResponse> loginResponse = refreshTokenService.rotate(rawRefreshToken)
+	            .flatMap(newRefresh -> refreshTokenService.validateAndGetUser(newRefresh)
+	                .map(user -> new LoginResponse(jwtService.generateToken(user), newRefresh))
+	            );
+    	
+    	if(loginResponse.isEmpty()) {
+    		throw new InvalidRefreshTokenException(String.format("Refresh token %s not valid", rawRefreshToken));
+    	}
+    	
+    	return loginResponse.get();
+	    
     }
 }

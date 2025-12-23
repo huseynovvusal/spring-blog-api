@@ -6,10 +6,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -36,26 +38,26 @@ public class RestExceptionHandler {
      * @param ex  the validation exception
      * @param req the HTTP request
      * @return structured error response with field-level messages
+     * @throws Exception 
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponseDto handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
+    public ErrorResponseDto handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) throws Exception {
+    	
+    	//this condition is used to let Spring automatically handle exceptions that are define their own HTTP response status, without modify their 
+    	//behavior
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
         Map<String, String> fields = ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(
                         FieldError::getField,
                         DefaultMessageSourceResolvable::getDefaultMessage,
-                        (a, b) -> a,
+                        (a, _) -> a,
                         LinkedHashMap::new
                 ));
 
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message("Validation failed")
-                .fieldErrors(fields)
-                .build();
+        return getErrorResponse(req.getRequestURI(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), "Validation failed", fields);
     }
 
     /**
@@ -63,23 +65,20 @@ public class RestExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponseDto handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest req) {
+    public ErrorResponseDto handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest req) throws Exception{
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
         Map<String, String> fields = ex.getConstraintViolations().stream()
                 .collect(Collectors.toMap(
                         violation -> violation.getPropertyPath() != null ? violation.getPropertyPath().toString() : "",
                         ConstraintViolation::getMessage,
-                        (a, b) -> a,
+                        (a, _) -> a,
                         LinkedHashMap::new
                 ));
 
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message("Validation failed")
-                .fieldErrors(fields)
-                .build();
+        return getErrorResponse(req.getRequestURI(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), "Validation failed", fields);
     }
 
     /**
@@ -88,17 +87,18 @@ public class RestExceptionHandler {
      * @param ex  the exception indicating missing data
      * @param req the HTTP request
      * @return structured 404 error response
+     * @throws Exception
      */
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponseDto handleNotFound(NoSuchElementException ex, HttpServletRequest req) {
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.NOT_FOUND.value())
-                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
-                .message(ex.getMessage() != null ? ex.getMessage() : "Resource not found")
-                .build();
+    public ErrorResponseDto handleNotFound(NoSuchElementException ex, HttpServletRequest req) throws Exception{
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	String message = ex.getMessage() != null ? ex.getMessage() : "Resource not found";
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase(), message, Map.of());
+    	
     }
 
     /**
@@ -107,17 +107,17 @@ public class RestExceptionHandler {
      * @param ex  the access denied exception
      * @param req the HTTP request
      * @return structured 403 error response
+     * @throws Exception 
      */
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponseDto handleForbidden(AccessDeniedException ex, HttpServletRequest req) {
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.FORBIDDEN.value())
-                .error(HttpStatus.FORBIDDEN.getReasonPhrase())
-                .message("Access is denied")
-                .build();
+    public ErrorResponseDto handleForbidden(AccessDeniedException ex, HttpServletRequest req) throws Exception{
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.getReasonPhrase(), "Access is denied", Map.of());
+       
     }
 
     /**
@@ -126,47 +126,48 @@ public class RestExceptionHandler {
      * @param ex  the authentication exception
      * @param req the HTTP request
      * @return structured 401 error response
+     * @throws Exception
      */
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponseDto handleAuth(AuthenticationException ex, HttpServletRequest req) {
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.UNAUTHORIZED.value())
-                .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                .message("Authentication failed")
-                .build();
+    public ErrorResponseDto handleAuth(AuthenticationException ex, HttpServletRequest req) throws Exception{
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(), "Authentication failed", Map.of());
+        
     }
 
     /**
      * Handles unsupported HTTP methods.
+     * @throws Exception 
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public ErrorResponseDto handleMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest req) {
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.METHOD_NOT_ALLOWED.value())
-                .error(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
-                .message(ex.getMessage())
-                .build();
+    public ErrorResponseDto handleMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest req) throws Exception {
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.METHOD_NOT_ALLOWED.value(), HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(), ex.getMessage(), Map.of());
+    	
     }
 
     /**
      * Handles missing required request parameters.
+     * @throws Exception 
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponseDto handleMissingParam(MissingServletRequestParameterException ex, HttpServletRequest req) {
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(String.format("Missing required parameter '%s'", ex.getParameterName()))
-                .build();
+    public ErrorResponseDto handleMissingParam(MissingServletRequestParameterException ex, HttpServletRequest req) throws Exception {
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	String message = String.format("Missing required parameter '%s'", ex.getParameterName());
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), message, Map.of());
+    	
     }
 
     /**
@@ -174,17 +175,17 @@ public class RestExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponseDto handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest req) {
+    public ErrorResponseDto handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest req) throws Exception{
+                
+        if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
         String name = ex.getName();
         String requiredType = ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "";
         String message = String.format("Parameter '%s' must be of type %s", name, requiredType);
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(message)
-                .build();
+        
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), message, Map.of());
+    	
     }
 
     /**
@@ -192,14 +193,13 @@ public class RestExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponseDto handleUnreadableBody(HttpMessageNotReadableException ex, HttpServletRequest req) {
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message("Malformed JSON request")
-                .build();
+    public ErrorResponseDto handleUnreadableBody(HttpMessageNotReadableException ex, HttpServletRequest req) throws Exception{
+        
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.BAD_REQUEST.value(),  HttpStatus.BAD_REQUEST.getReasonPhrase(), "Malformed JSON request", Map.of());
+    	
     }
 
     /**
@@ -208,17 +208,17 @@ public class RestExceptionHandler {
      * @param ex  the rate limiting exception
      * @param req the HTTP request
      * @return structured 429 error response
+     * @throws Exception
      */
     @ExceptionHandler(RequestNotPermitted.class)
     @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
-    public ErrorResponseDto handleRateLimit(RequestNotPermitted ex, HttpServletRequest req) {
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.TOO_MANY_REQUESTS.value())
-                .error(HttpStatus.TOO_MANY_REQUESTS.getReasonPhrase())
-                .message("Rate limit exceeded. Please try again later.")
-                .build();
+    public ErrorResponseDto handleRateLimit(RequestNotPermitted ex, HttpServletRequest req) throws Exception{
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.TOO_MANY_REQUESTS.value(),  HttpStatus.TOO_MANY_REQUESTS.getReasonPhrase(), "Rate limit exceeded. Please try again later.", Map.of());
+    	
     }
 
     /**
@@ -227,35 +227,126 @@ public class RestExceptionHandler {
      * @param ex  the email failure exception
      * @param req the HTTP request
      * @return structured 500 error response
+     * @throws Exception
      */
     @ExceptionHandler(EmailFailedException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponseDto handleEmailSendingFailed(EmailFailedException ex, HttpServletRequest req) {
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error("Email Sending Failed")
-                .message(ex.getMessage() != null ? ex.getMessage() : "Failed to send email")
-                .build();
+    public ErrorResponseDto handleEmailSendingFailed(EmailFailedException ex, HttpServletRequest req) throws Exception{
+        
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	String message = ex.getMessage() != null ? ex.getMessage() : "Failed to send email";
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR.value(), "Email Sending Failed", message, Map.of());
+    	
     }
 
+    /**
+     * Handles user not found.
+     *
+     * @param ex  UsernameNotFoundException
+     * @param req the HTTP request
+     * @return structured 404 error response
+     * @throws Exception
+     */
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponseDto handleUsernameNotFoundException(UsernameNotFoundException ex, HttpServletRequest req) throws Exception{
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.getReasonPhrase(), "User not found", Map.of());
+    
+    }
+    
+    /**
+     * Handles user already registered.
+     *
+     * @param ex  UserAlreadyRegistered
+     * @param req the HTTP request
+     * @return structured 400 error response
+     * @throws Exception
+     */
+    @ExceptionHandler(UserAlreadyRegisteredException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseDto handleUserAlreadyRegistered(UserAlreadyRegisteredException ex, HttpServletRequest req) throws Exception{
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	String message = ex.getMessage() != null ? ex.getMessage() : "User already registered";
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), message, Map.of());
+    
+    }
+        
+    /**
+     * Handles invalid refresh token.
+     *
+     * @param ex  InvalidRefreshToken
+     * @param req the HTTP request
+     * @return structured 400 error response
+     * @throws Exception
+     */
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponseDto handleInvalidRefreshToken(InvalidRefreshTokenException ex, HttpServletRequest req) throws Exception{
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	String message = ex.getMessage() != null ? ex.getMessage() : "Invalid refresh token";
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(), message, Map.of());
+    
+    }
+       
+    /**
+     * Handles invalid refresh token.
+     *
+     * @param ex  BlogNotFoundException
+     * @param req the HTTP request
+     * @return structured 400 error response
+     * @throws Exception
+     */
+    @ExceptionHandler(BlogNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseDto handleBlogNotFoundException(BlogNotFoundException ex, HttpServletRequest req) throws Exception{
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	String message = ex.getMessage() != null ? ex.getMessage() : "Blog ID not found";
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), message, Map.of());
+    
+    }
+        
     /**
      * Handles all other uncaught exceptions.
      *
      * @param ex  the generic exception
      * @param req the HTTP request
      * @return structured 500 error response
+     * @throws Exception 
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponseDto handleGeneric(Exception ex, HttpServletRequest req) {
-        return ErrorResponseDto.builder()
-                .timestamp(Instant.now())
-                .path(req.getRequestURI())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .message("Unexpected error")
-                .build();
+    public ErrorResponseDto handleGeneric(Exception ex, HttpServletRequest req) throws Exception {
+    	
+    	if (AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class) != null)
+            throw ex;
+    	
+    	return getErrorResponse(req.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), "Unexpected error", Map.of());
+    	
     }
+    
+    private ErrorResponseDto getErrorResponse(String uri, int status, String error, String message, Map<String, String> fields) {
+		return ErrorResponseDto.builder()
+                .timestamp(Instant.now())
+                .path(uri)
+                .status(status)
+                .error(error)
+                .message(message)
+                .fieldErrors(fields)
+                .build();
+	}
 }
