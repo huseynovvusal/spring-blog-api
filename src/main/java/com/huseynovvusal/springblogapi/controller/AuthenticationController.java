@@ -3,13 +3,14 @@ package com.huseynovvusal.springblogapi.controller;
 import com.huseynovvusal.springblogapi.dto.*;
 import com.huseynovvusal.springblogapi.dto.response.ForgotPasswordResponse;
 import com.huseynovvusal.springblogapi.dto.response.ResetPasswordResponse;
+import com.huseynovvusal.springblogapi.exception.InvalidRefreshTokenException;
+import com.huseynovvusal.springblogapi.exception.UserAlreadyRegisteredException;
 import com.huseynovvusal.springblogapi.service.AuthenticationService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -29,14 +30,15 @@ public class AuthenticationController {
      *
      * @param request the registration request containing user details
      * @return a response entity with registration status and user info
+     * @throws UserAlreadyRegisteredException 
      */
     @PostMapping("register")
     @RateLimiter(name = "auth")
-    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
+    public RegisterResponse register(@Valid @RequestBody RegisterRequest request) throws UserAlreadyRegisteredException {
         logger.info("Received registration request for email: {}", request.getEmail());
         RegisterResponse response = authenticationService.register(request);
         logger.debug("Registration successful for email: {}, response: {}", request.getEmail(), response);
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     /**
@@ -47,11 +49,11 @@ public class AuthenticationController {
      */
     @PostMapping("login")
     @RateLimiter(name = "auth")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         logger.info("Login attempt for username: {}", request.getUsername());
         LoginResponse response = authenticationService.login(request);
         logger.debug("Login successful for username: {}, response: {}", request.getUsername(), response);
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     /**
@@ -61,11 +63,11 @@ public class AuthenticationController {
      * @return a response entity with token generation status
      */
     @PostMapping("forgot-password")
-    public ResponseEntity<ForgotPasswordResponse> getPasswordResetLink(@Valid @RequestBody ForgotPasswordRequest request){
+    public ForgotPasswordResponse getPasswordResetLink(@Valid @RequestBody ForgotPasswordRequest request){
         logger.info("Password reset link requested for email: {}", request.getEmail());
         ForgotPasswordResponse response = authenticationService.generatePasswordResetToken(request);
         logger.debug("Password reset token generated for email: {}, response: {}", request.getEmail(), response);
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     /**
@@ -75,22 +77,21 @@ public class AuthenticationController {
      * @return a response entity with password reset status
      */
     @PostMapping("reset-password")
-    public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request){
+    public ResetPasswordResponse resetPassword(@Valid @RequestBody ResetPasswordRequest request){
         logger.info("Password reset attempt with token: {}", request.getToken());
         ResetPasswordResponse response = authenticationService.verifyAndResetPassword(request);
         logger.debug("Password reset completed for token: {}, response: {}", request.getToken(), response);
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     /**
      * Rotates a valid refresh token into a new access token and refresh token.
+     * @throws InvalidRefreshTokenException 
      */
     @PostMapping("refresh")
     @RateLimiter(name = "auth")
-    public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+    public LoginResponse refresh(@Valid @RequestBody RefreshTokenRequest request) throws InvalidRefreshTokenException {
         logger.info("Refresh token attempt");
-        return authenticationService.refreshTokens(request.getRefreshToken())
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(401).build());
+        return authenticationService.refreshTokens(request.getRefreshToken());
     }
 }

@@ -2,7 +2,6 @@ package com.huseynovvusal.springblogapi.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +23,10 @@ public class AdminController {
     private final UserService userService;
 
     @PostMapping("block-user")
-    public ResponseEntity<BlockUserResponse> changeBlockStatus(@Valid @RequestBody BlockUserRequest request){
+    public BlockUserResponse changeBlockStatus(@Valid @RequestBody BlockUserRequest request){
         logger.info("Changing Block Status for: {}", request.getUsername());
         BlockUserResponse response = userService.changeBlockStatus(request);
-        return ResponseEntity.ok(response);
+        logger.info("Block Status for: {} correctly saved", request.getUsername());
+        return response;
     }
 }

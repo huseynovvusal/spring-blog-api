@@ -7,6 +7,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import com.huseynovvusal.springblogapi.dto.LoginRequest;
 import com.huseynovvusal.springblogapi.dto.LoginResponse;
 import com.huseynovvusal.springblogapi.dto.RegisterRequest;
@@ -15,6 +17,7 @@ import com.huseynovvusal.springblogapi.dto.ResetPasswordRequest;
 import com.huseynovvusal.springblogapi.dto.response.ResetPasswordResponse;
 import com.huseynovvusal.springblogapi.events.ResetPasswordEvent;
 import com.huseynovvusal.springblogapi.events.UserRegisteredEvent;
+import com.huseynovvusal.springblogapi.exception.UserAlreadyRegisteredException;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,21 +54,16 @@ class AuthenticationServiceTest {
   }
 
   @Test
-  void should_return_registration_response_with_token() {
+  void should_return_registration_response_with_token() throws UserAlreadyRegisteredException {
     // Given
     String token = "token";
-    RegisterRequest request = RegisterRequest.builder()
-        .email("email")
-        .lastName("lastName")
-        .username("username")
-        .firstName("firstName")
-        .build();
-
+    RegisterRequest request = new RegisterRequest("firstName", "lastName", "username", "email", "");
+    
     // When
     when(passwordEncoder.encode(any())).thenReturn("password");
     when(userRepository.save(any())).thenReturn(new User());
     when(jwtService.generateToken(any())).thenReturn(token);
-  when(refreshTokenService.issue(any())).thenReturn("refresh");
+    when(refreshTokenService.issue(any())).thenReturn("refresh");
     doNothing().when(eventPublisher).publishEvent(any(UserRegisteredEvent.class));
 
     RegisterResponse resultRegisterResponse = authenticationService.register(request);
@@ -75,6 +73,39 @@ class AuthenticationServiceTest {
   }
 
   @Test
+  void should_throw_user_already_registered_when_register_duplicate_username() throws UserAlreadyRegisteredException {
+    // Given
+    RegisterRequest request = new RegisterRequest("firstName", "lastName", "username", "email", "");
+    
+    User user = new User();
+    
+    // When
+    when(userRepository.findByUsername(any())).thenReturn(user);
+      
+    // Then
+    var e = assertThrows(UserAlreadyRegisteredException.class, () -> authenticationService.register(request));
+    assertThat(e.getMessage()).isEqualTo("User with username username already exists");
+  
+  }
+  
+  @Test
+  void should_throw_user_already_registered_when_register_duplicate_email() throws UserAlreadyRegisteredException {
+    // Given
+    RegisterRequest request = new RegisterRequest("firstName", "lastName", "username", "email", "");
+    
+    User user = new User();
+    
+    // When
+    when(userRepository.findByUsername(any())).thenReturn(null);
+    when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
+      
+    // Then
+    var e = assertThrows(UserAlreadyRegisteredException.class, () -> authenticationService.register(request));
+    assertThat(e.getMessage()).isEqualTo("User with email email already exists");
+  
+  }
+  
+  @Test
   void should_throw_username_not_found_exception_when_login() {
     // Given
 
@@ -82,10 +113,11 @@ class AuthenticationServiceTest {
     when(authenticationManager.authenticate(any())).thenReturn(null);
     when(userRepository.findByUsername(any())).thenReturn(null);
     LoginRequest loginRequest = new LoginRequest();
+    loginRequest.setUsername("username");
 
     // Then
     var e = assertThrows(UsernameNotFoundException.class, () -> authenticationService.login(loginRequest));
-    assertThat(e.getMessage()).isEqualTo("User not found");
+    assertThat(e.getMessage()).isEqualTo("User with username username not found");
   }
 
   @Test
@@ -99,7 +131,7 @@ class AuthenticationServiceTest {
     when(authenticationManager.authenticate(any())).thenReturn(null);
     when(userRepository.findByUsername(any())).thenReturn(user);
     when(jwtService.generateToken(any())).thenReturn(token);
-  when(refreshTokenService.issue(any())).thenReturn("refresh");
+    when(refreshTokenService.issue(any())).thenReturn("refresh");
 
     LoginResponse loginResponse = authenticationService.login(loginRequest);
 

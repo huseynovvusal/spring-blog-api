@@ -121,7 +121,6 @@ public class JwtService {
      * @param token JWT token
      * @return list of role strings
      */
-    @SuppressWarnings("unchecked")
     public List<String> extractRoles(String token) {
         Object roles = parseAllClaims(token).get("roles");
         if (roles instanceof List<?> list) {

@@ -51,22 +51,20 @@ public class UserService {
         User user = userRepository.findByUsername(username);
         if (user == null) {
             log.warn("User not found with username: {}", username);
-            throw new UsernameNotFoundException("User not found: " + username);
+            throw new UsernameNotFoundException(String.format("User not found: %s", username));
         }
         return user;
     }
 
     public BlockUserResponse changeBlockStatus(BlockUserRequest request) {
-        User user = getUserByUsername(request.getUsername());
+        
+    	User user = getUserByUsername(request.getUsername());
         user.setBlocked(request.getIsBlocked());
         userRepository.save(user);
-        BlockUserResponse response = new BlockUserResponse();
-        response.setFirstName(user.getFirstName());
-        response.setLastName(user.getLastName());
-        response.setEmail(user.getEmail());
-        response.setUsername(user.getUsername());
-        response.setIsBlocked(user.isBlocked());
+        
         log.info("User {} has been {}", user.getUsername(), user.isBlocked() ? "blocked" : "unblocked");
-        return response;
+        
+        return new BlockUserResponse(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.isBlocked());
+        	
     }
 }

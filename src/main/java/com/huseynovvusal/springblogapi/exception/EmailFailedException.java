@@ -6,7 +6,9 @@ package com.huseynovvusal.springblogapi.exception;
  */
 public class EmailFailedException extends RuntimeException {
 
-    /**
+	private static final long serialVersionUID = -5999120684026789425L;
+
+	/**
      * Constructs a new EmailFailedException with a specific error message.
      *
      * @param message the detail message explaining the failure

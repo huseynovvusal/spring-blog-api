@@ -46,7 +46,7 @@ public class RefreshTokenService {
         entity.setRevoked(false);
         refreshTokenRepository.save(entity);
 
-        return join(id, secret);
+        return String.join(".", id, secret);
     }
 
     /**
@@ -93,10 +93,6 @@ public class RefreshTokenService {
         byte[] bytes = new byte[32];
         secureRandom.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
-    }
-
-    private String join(String id, String secret) {
-        return id + "." + secret;
     }
 
     private Parsed parse(String token) {

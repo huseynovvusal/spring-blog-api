@@ -8,8 +8,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.List;
-
 /**
  * Repository interface for accessing {@link Blog} entities.
  * Supports pagination, dynamic filtering, and custom queries.

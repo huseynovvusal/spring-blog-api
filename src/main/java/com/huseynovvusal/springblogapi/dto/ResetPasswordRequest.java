@@ -2,13 +2,17 @@ package com.huseynovvusal.springblogapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Request DTO for resetting a user's password.
  * Contains the reset token and the new password to be applied.
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResetPasswordRequest {
 
     /**
