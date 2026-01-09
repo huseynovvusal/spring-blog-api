@@ -16,7 +16,7 @@ public class OpenAPIConfiguration {
     public OpenAPI defineOpenApi() {
         Server server = new Server();
         server.setUrl("http://localhost:8082/api/v1");
-        server.setDescription("Developments₹-1");
+        server.setDescription("Developments");
 
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
