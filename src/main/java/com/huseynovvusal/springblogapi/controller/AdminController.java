@@ -1,5 +1,6 @@
 package com.huseynovvusal.springblogapi.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ public class AdminController {
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
     private final UserService userService;
 
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping("block-user")
     public BlockUserResponse changeBlockStatus(@Valid @RequestBody BlockUserRequest request){
         logger.info("Changing Block Status for: {}", request.getUsername());

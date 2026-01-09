@@ -4,6 +4,7 @@ import com.huseynovvusal.springblogapi.dto.CreateBlog;
 import com.huseynovvusal.springblogapi.dto.response.BlogResponseDto;
 import com.huseynovvusal.springblogapi.service.BlogService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,7 @@ public class BlogController {
      * @param body the blog creation request
      * @return the created blog response
      */
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public BlogResponseDto create(@Valid @RequestBody CreateBlog body) {
         logger.info("Creating new blog with title: {}", body.getTitle());
