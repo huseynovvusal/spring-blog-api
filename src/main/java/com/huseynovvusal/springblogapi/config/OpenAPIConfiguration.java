@@ -26,7 +26,7 @@ public class OpenAPIConfiguration {
         Info information = new Info()
                 .title("Spring Blog API")
                 .version("1.0")
-                .description("Find all API enpoints and related info here...");
+                .description("Find all API endpoints and related info here...");
         return new OpenAPI().info(information).
                 servers(List.of(server))
                 .components(
