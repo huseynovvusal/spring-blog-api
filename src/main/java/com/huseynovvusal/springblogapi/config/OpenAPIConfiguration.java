@@ -24,7 +24,6 @@ public class OpenAPIConfiguration {
                 .bearerFormat("JWT");
 
 
-
         Info information = new Info()
                 .title("Spring Blog API")
                 .version("1.0")
