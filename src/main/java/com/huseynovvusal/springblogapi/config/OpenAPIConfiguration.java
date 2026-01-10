@@ -29,6 +29,7 @@ public class OpenAPIConfiguration {
                 .description("Find all API enpoints and related info here...");
         return new OpenAPI().info(information).
                 servers(List.of(server))
-                .components((new Components().addSecuritySchemes("bearerAuth", securityScheme)));
+                .components(
+                        (new Components().addSecuritySchemes("bearerAuth", securityScheme)));
     }
 }
