@@ -18,12 +18,12 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
+@SecurityRequirement(name = "bearerAuth")
 public class AdminController {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
     private final UserService userService;
 
-    @SecurityRequirement(name = "bearerAuth")
     @PostMapping("block-user")
     public BlockUserResponse changeBlockStatus(@Valid @RequestBody BlockUserRequest request){
         logger.info("Changing Block Status for: {}", request.getUsername());

@@ -25,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/blogs")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class BlogController {
 
     private static final Logger logger = LoggerFactory.getLogger(BlogController.class);
@@ -79,7 +80,6 @@ public class BlogController {
      * @param body the blog creation request
      * @return the created blog response
      */
-    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public BlogResponseDto create(@Valid @RequestBody CreateBlog body) {
         logger.info("Creating new blog with title: {}", body.getTitle());
