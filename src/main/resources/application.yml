@@ -61,6 +61,11 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
+openapi:
+  server:
+    url: ${OPENAPI_SERVER_URL:http://localhost:8082/api/v1}
+    description: ${OPENAPI_SERVER_DESCRIPTION:Development}
+
 resilience4j:
   ratelimiter:
     configs:

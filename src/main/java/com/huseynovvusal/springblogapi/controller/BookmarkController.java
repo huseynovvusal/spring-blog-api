@@ -3,6 +3,7 @@ package com.huseynovvusal.springblogapi.controller;
 import com.huseynovvusal.springblogapi.dto.response.BlogResponseDto;
 import com.huseynovvusal.springblogapi.exception.BlogNotFoundException;
 import com.huseynovvusal.springblogapi.service.BookmarkService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for managing blog bookmarks.
  * Supports adding, removing, checking, toggling, and listing bookmarks.
  */
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/bookmarks")
 @RequiredArgsConstructor

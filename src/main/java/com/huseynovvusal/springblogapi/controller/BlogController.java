@@ -4,6 +4,7 @@ import com.huseynovvusal.springblogapi.dto.CreateBlog;
 import com.huseynovvusal.springblogapi.dto.response.BlogResponseDto;
 import com.huseynovvusal.springblogapi.service.BlogService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/blogs")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class BlogController {
 
     private static final Logger logger = LoggerFactory.getLogger(BlogController.class);
