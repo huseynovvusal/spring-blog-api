@@ -7,6 +7,7 @@ import com.huseynovvusal.springblogapi.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -90,5 +91,26 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         logger.debug("Retrieving AuthenticationManager from configuration");
         return authenticationConfiguration.getAuthenticationManager();
+    }
+    
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> disableJwtServletFilter(JwtAuthenticationFilter filter) {
+           FilterRegistrationBean<JwtAuthenticationFilter> registration = new FilterRegistrationBean<>(filter);
+           registration.setEnabled(false);
+           return registration;
+    }
+    
+    @Bean
+    public FilterRegistrationBean<BlockedUserFilter> disableBlockedUserServletFilter(BlockedUserFilter filter) {
+           FilterRegistrationBean<BlockedUserFilter> registration = new FilterRegistrationBean<>(filter);
+           registration.setEnabled(false);
+           return registration;
+    }
+    
+    @Bean
+    public FilterRegistrationBean<DatabaseHealthFilter> disableDatabaseHealthServletFilter(DatabaseHealthFilter filter) {
+           FilterRegistrationBean<DatabaseHealthFilter> registration = new FilterRegistrationBean<>(filter);
+           registration.setEnabled(false);
+           return registration;
     }
 }
