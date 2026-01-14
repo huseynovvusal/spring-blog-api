@@ -28,3 +28,8 @@ security:
 client:
   app:
     url: http://localhost:3000
+
+openapi:
+  server:
+    url: ${OPENAPI_SERVER_URL:http://localhost:8080/api/v1}
+    description: ${OPENAPI_SERVER_DESCRIPTION:Test}
