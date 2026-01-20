@@ -1,0 +1,46 @@
+### register
+POST http://localhost:8082/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Tom",
+  "lastName": "Jerry",
+  "username": "Jerry",
+  "email": "tj@example.com",
+  "password": "12345678"
+}
+
+### login
+POST http://localhost:8082/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "Jerry",
+  "password": "12345678"
+}
+
+### forgot-password
+POST http://localhost:8082/api/v1/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "tj@example.com"
+}
+
+### reset-password
+POST http://localhost:8082/api/v1/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "token",
+  "newPassword": "newPassword"
+}
+
+### refresh
+### Rotates a valid refresh token into a new access token and refresh token
+POST http://localhost:8082/api/v1/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": ""
+}

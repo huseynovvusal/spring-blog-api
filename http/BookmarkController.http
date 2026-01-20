@@ -1,0 +1,27 @@
+### add
+POST http://localhost:8082/api/v1/api/bookmarks/1
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+### remove
+DELETE http://localhost:8082/api/v1/api/bookmarks/1
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+### isBookmarked
+GET http://localhost:8082/api/v1/api/bookmarks/check?blogId=1
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+### toggle
+POST http://localhost:8082/api/v1/api/bookmarks/1/toggle
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded
+
+
+### list
+GET http://localhost:8082/api/v1/api/bookmarks?
+    page=0&
+    size=20
+Authorization: Bearer {{token}}
+Content-Type: application/x-www-form-urlencoded

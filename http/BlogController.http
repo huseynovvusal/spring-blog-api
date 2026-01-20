@@ -1,0 +1,38 @@
+### getAllBlogs
+GET http://localhost:8082/api/v1/blogs
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+### getById
+GET http://localhost:8082/api/v1/blogs/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### getByAuthor
+GET http://localhost:8082/api/v1/blogs/author/Jerry?page=0&size=20&sort=createdAt,desc
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
+### create
+POST http://localhost:8082/api/v1/blogs
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "this is a test",
+  "content": "this is a test"
+}
+
+
+### filter tags meaning value
+GET http://localhost:8082/api/v1/blogs/filter?
+    tags=&
+    author=&
+    createdFrom=&
+    createdTo=&
+    q=&
+    onlyPublished=false&page=0&size=20
+Authorization: Bearer {{token}}
+Content-Type: application/json
