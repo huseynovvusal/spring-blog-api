@@ -26,5 +26,6 @@ public class CreateBlog {
      * Content/body of the blog post.
      */
     @NotBlank(message = "Content is required")
+    @Size(max = 50000, message = "Content must not exceed 50,000 characters")
     private String content;
 }
