@@ -6,6 +6,8 @@ import com.huseynovvusal.springblogapi.mapper.BlogMapper;
 import com.huseynovvusal.springblogapi.model.Blog;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.BlogRepository;
+import com.huseynovvusal.springblogapi.security.RichTextSanitizer;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,6 +34,7 @@ public class BlogService {
 
     private final BlogRepository blogRepository;
     private final UserService userService;
+    private final RichTextSanitizer richTextSanitizer;
 
     /**
      * Retrieves all blogs with pagination.
@@ -90,7 +93,12 @@ public class BlogService {
 
         Blog blog = new Blog();
         blog.setTitle(request.getTitle());
-        blog.setContent(request.getContent());
+        String sanitized = richTextSanitizer.sanitize(request.getContent());
+        if (!sanitized.equals(request.getContent())) {
+            log.info("Content sanitized for user {}", currentUser.getUsername());
+        }
+
+        blog.setContent(sanitized);
         blog.setAuthor(currentUser);
 
         Blog saved = blogRepository.save(blog);
