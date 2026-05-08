@@ -30,6 +30,27 @@ Thank you for your interest in contributing to **Spring Blog API**! We welcome c
 - Write meaningful commit messages.
 - Add tests for new features or bug fixes.
 
+## ✅ Running Tests
+Run the full test suite before opening a pull request:
+
+```bash
+./gradlew test
+```
+
+Generate the JaCoCo coverage report with:
+
+```bash
+./gradlew test jacocoTestReport
+```
+
+The HTML coverage report is generated at:
+
+```text
+build/reports/jacoco/test/html/index.html
+```
+
+Integration tests should exercise realistic API workflows through Spring Boot Test, including successful flows and expected error responses.
+
 ## 🐞 Issue Reporting
 - Search for existing issues before opening a new one.
 - Provide clear steps to reproduce, expected behavior, and screenshots/logs if applicable.
