@@ -133,4 +133,28 @@ public class BlogService {
 
         return blogRepository.findAll(spec, pageable).map(BlogMapper::toDto);
     }
+
+    /**
+    * Searches blogs based on a keyword present in title, content, or tags.
+    * Supports pagination and caching for better performance.
+    *
+    * @param q search keyword
+    * @param pageable pagination and sorting information
+    * @return paginated list of matching blog responses
+    */
+    @Cacheable(
+        value = "searchBlogs",
+        key = "{#q,#pageable.pageNumber,#pageable.pageSize}"
+   )
+   public Page<BlogResponseDto> search(String q, Pageable pageable) {
+    log.debug("Searching blogs with keyword: {}", q);
+       Specification<Blog> spec =
+            Specification.where(titleContains(q))
+                    .or(contentContains(q))
+                    .or(tagContains(q));
+     return blogRepository
+            .findAll(spec, pageable)
+            .map(BlogMapper::toDto);
+    }
+
 }
