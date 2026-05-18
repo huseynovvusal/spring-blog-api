@@ -100,4 +100,25 @@ public final class BlogSpecifications {
             );
         };
     }
+
+    /**
+    * Creates a specification to search blogs by tag name.
+    *
+    * @param q keyword used for tag search
+    * @return specification matching tags containing the keyword
+    */
+    public static Specification<Blog> tagContains(String q) {
+    return (root, query, cb) -> {
+        if (q == null || q.isBlank()) {
+            return cb.conjunction();
+        }
+
+        query.distinct(true);
+
+        return cb.like(
+                cb.lower(root.join("tags", JoinType.LEFT).get("name")),
+                "%" + q.toLowerCase() + "%"
+        );
+    };
+   }
 }
