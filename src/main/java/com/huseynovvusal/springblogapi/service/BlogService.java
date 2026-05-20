@@ -149,8 +149,7 @@ public class BlogService {
    public Page<BlogResponseDto> search(String q, Pageable pageable) {
     log.debug("Searching blogs with keyword: {}", q);
        Specification<Blog> spec =
-            Specification.where(titleContains(q))
-                    .or(contentContains(q))
+            Specification.where(textSearch(q))
                     .or(tagContains(q));
      return blogRepository
             .findAll(spec, pageable)
