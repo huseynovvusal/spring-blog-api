@@ -5,6 +5,7 @@ import com.huseynovvusal.springblogapi.dto.response.BlogResponseDto;
 import com.huseynovvusal.springblogapi.service.BlogService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,4 +113,24 @@ public class BlogController {
                 tags, author, createdFrom, createdTo, q, onlyPublished);
         return blogService.filter(tags, author, createdFrom, createdTo, q, onlyPublished, pageable);
     }
+
+    /**
+    * Searches blogs by keyword in title, content, or tags.
+    *
+    * @param q search keyword
+    * @param pageable pagination information
+    * @return paginated list of matching blogs
+    */
+    @Operation(
+    summary = "Search blog posts",
+    description = "Search blogs by title, content or tags"
+    )
+    @GetMapping("/search")
+    public Page<BlogResponseDto> search(
+        @RequestParam String q,
+        @PageableDefault(size = 20) Pageable pageable) {
+
+    logger.info("Searching blogs with keyword: {}", q);
+    return blogService.search(q, pageable);
+  }
 }
