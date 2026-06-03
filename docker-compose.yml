@@ -47,8 +47,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_MAIL_HOST=mailhog
       - SPRING_MAIL_PORT=1025
-      - SPRING_MAIL_USERNAME:mailuser
-      - SPRING_MAIL_PASSWORD:mailpass
+      - SPRING_MAIL_USERNAME=mailuser
+      - SPRING_MAIL_PASSWORD=mailpass
 
 networks:
   default:
