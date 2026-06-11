@@ -32,7 +32,14 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew assemble
 
       - name: Run tests
         run: ./gradlew test
+
+      - name: Format check (Spotless)
+        run: ./gradlew spotlessCheck
+
+      - name: Lint check (Checkstyle)
+        if: ${{ !cancelled() }}
+        run: ./gradlew checkstyleMain checkstyleTest
