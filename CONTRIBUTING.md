@@ -26,9 +26,44 @@ Thank you for your interest in contributing to **Spring Blog API**! We welcome c
 
 ## 🧑‍💻 Code Style & Best Practices
 - Use Java best practices and follow the conventions used in the project.
-- Organize imports and format code using your IDE's auto-format feature.
 - Write meaningful commit messages.
 - Add tests for new features or bug fixes.
+
+### 🎨 Formatting & Linting
+This project enforces a consistent code style in CI using **Spotless** (with
+[google-java-format](https://github.com/google/google-java-format)) and **Checkstyle**.
+These run as separate checks on every pull request, so please run them locally
+**before** opening a PR to avoid red CI.
+
+**Auto-format your code** (fixes formatting for you):
+
+```bash
+./gradlew spotlessApply
+```
+
+**Verify formatting** without changing files (this is exactly what CI runs):
+
+```bash
+./gradlew spotlessCheck
+```
+
+**Find linting issues** with Checkstyle:
+
+```bash
+./gradlew checkstyleMain checkstyleTest
+```
+
+Or run everything CI checks at once — build, tests, formatting, and linting:
+
+```bash
+./gradlew check
+```
+
+> 💡 **Tip:** If `spotlessCheck` fails, just run `./gradlew spotlessApply` and it
+> will fix the formatting automatically. Checkstyle issues (e.g. wildcard imports
+> or missing braces) usually need a manual fix — open the report at
+> `build/reports/checkstyle/main.html` to see exactly what to change.
+
 
 ## ✅ Running Tests
 Run the full test suite before opening a pull request:

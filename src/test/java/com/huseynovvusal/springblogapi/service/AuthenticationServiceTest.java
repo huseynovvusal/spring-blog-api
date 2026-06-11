@@ -1,13 +1,11 @@
 package com.huseynovvusal.springblogapi.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-
-import java.util.Optional;
 
 import com.huseynovvusal.springblogapi.dto.LoginRequest;
 import com.huseynovvusal.springblogapi.dto.LoginResponse;
@@ -20,6 +18,7 @@ import com.huseynovvusal.springblogapi.events.UserRegisteredEvent;
 import com.huseynovvusal.springblogapi.exception.UserAlreadyRegisteredException;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.UserRepository;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,32 +32,32 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {
 
-  @Mock
-  private ApplicationEventPublisher eventPublisher;
-  @Mock
-  private UserRepository userRepository;
-  @Mock
-  private PasswordEncoder passwordEncoder;
-  @Mock
-  private JwtService jwtService;
-  @Mock
-  private AuthenticationManager authenticationManager;
-  @Mock
-  private RefreshTokenService refreshTokenService;
+  @Mock private ApplicationEventPublisher eventPublisher;
+  @Mock private UserRepository userRepository;
+  @Mock private PasswordEncoder passwordEncoder;
+  @Mock private JwtService jwtService;
+  @Mock private AuthenticationManager authenticationManager;
+  @Mock private RefreshTokenService refreshTokenService;
   private AuthenticationService authenticationService;
 
   @BeforeEach
   void setup() {
-  authenticationService = new AuthenticationService(eventPublisher, userRepository, passwordEncoder, jwtService,
-    authenticationManager, refreshTokenService);
+    authenticationService =
+        new AuthenticationService(
+            eventPublisher,
+            userRepository,
+            passwordEncoder,
+            jwtService,
+            authenticationManager,
+            refreshTokenService);
   }
 
   @Test
-  void should_return_registration_response_with_token() throws UserAlreadyRegisteredException {
+  void shouldReturnRegistrationResponseWithToken() throws UserAlreadyRegisteredException {
     // Given
     String token = "token";
     RegisterRequest request = new RegisterRequest("firstName", "lastName", "username", "email", "");
-    
+
     // When
     when(passwordEncoder.encode(any())).thenReturn("password");
     when(userRepository.save(any())).thenReturn(new User());
@@ -73,40 +72,44 @@ class AuthenticationServiceTest {
   }
 
   @Test
-  void should_throw_user_already_registered_when_register_duplicate_username() throws UserAlreadyRegisteredException {
+  void shouldThrowUserAlreadyRegisteredWhenRegisterDuplicateUsername()
+      throws UserAlreadyRegisteredException {
     // Given
     RegisterRequest request = new RegisterRequest("firstName", "lastName", "username", "email", "");
-    
+
     User user = new User();
-    
+
     // When
     when(userRepository.findByUsername(any())).thenReturn(user);
-      
+
     // Then
-    var e = assertThrows(UserAlreadyRegisteredException.class, () -> authenticationService.register(request));
+    var e =
+        assertThrows(
+            UserAlreadyRegisteredException.class, () -> authenticationService.register(request));
     assertThat(e.getMessage()).isEqualTo("User with username username already exists");
-  
   }
-  
+
   @Test
-  void should_throw_user_already_registered_when_register_duplicate_email() throws UserAlreadyRegisteredException {
+  void shouldThrowUserAlreadyRegisteredWhenRegisterDuplicateEmail()
+      throws UserAlreadyRegisteredException {
     // Given
     RegisterRequest request = new RegisterRequest("firstName", "lastName", "username", "email", "");
-    
+
     User user = new User();
-    
+
     // When
     when(userRepository.findByUsername(any())).thenReturn(null);
     when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
-      
+
     // Then
-    var e = assertThrows(UserAlreadyRegisteredException.class, () -> authenticationService.register(request));
+    var e =
+        assertThrows(
+            UserAlreadyRegisteredException.class, () -> authenticationService.register(request));
     assertThat(e.getMessage()).isEqualTo("User with email email already exists");
-  
   }
-  
+
   @Test
-  void should_throw_username_not_found_exception_when_login() {
+  void shouldThrowUsernameNotFoundExceptionWhenLogin() {
     // Given
 
     // When
@@ -116,12 +119,14 @@ class AuthenticationServiceTest {
     loginRequest.setUsername("username");
 
     // Then
-    var e = assertThrows(UsernameNotFoundException.class, () -> authenticationService.login(loginRequest));
+    var e =
+        assertThrows(
+            UsernameNotFoundException.class, () -> authenticationService.login(loginRequest));
     assertThat(e.getMessage()).isEqualTo("User with username username not found");
   }
 
   @Test
-  void should_return_login_response_with_token() {
+  void shouldReturnLoginResponseWithToken() {
     // Given
     String token = "token";
     LoginRequest loginRequest = new LoginRequest("username", "password");
@@ -140,7 +145,7 @@ class AuthenticationServiceTest {
   }
 
   @Test
-  void should_throw_username_not_found_exception_when_verify_and_reset_password() {
+  void shouldThrowUsernameNotFoundExceptionWhenVerifyAndResetPassword() {
     // Given
     ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
 
@@ -149,13 +154,15 @@ class AuthenticationServiceTest {
     when(userRepository.findByUsername(any())).thenReturn(null);
 
     // Then
-    var e = assertThrows(UsernameNotFoundException.class,
-        () -> authenticationService.verifyAndResetPassword(resetPasswordRequest));
+    var e =
+        assertThrows(
+            UsernameNotFoundException.class,
+            () -> authenticationService.verifyAndResetPassword(resetPasswordRequest));
     assertThat(e.getMessage()).isEqualTo("User not found");
   }
 
   @Test
-  void should_return_reset_password_response() {
+  void shouldReturnResetPasswordResponse() {
     // Given
     ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest();
     String username = "username";
@@ -168,12 +175,12 @@ class AuthenticationServiceTest {
     when(passwordEncoder.encode(any())).thenReturn("password");
     when(userRepository.save(any())).thenReturn(user);
     doNothing().when(eventPublisher).publishEvent(any(ResetPasswordEvent.class));
-  doNothing().when(refreshTokenService).revokeAllForUser(anyLong());
+    doNothing().when(refreshTokenService).revokeAllForUser(anyLong());
 
-    ResetPasswordResponse resetPasswordResponse = authenticationService.verifyAndResetPassword(resetPasswordRequest);
+    ResetPasswordResponse resetPasswordResponse =
+        authenticationService.verifyAndResetPassword(resetPasswordRequest);
 
     // Then
     assertThat(resetPasswordResponse.getMessage()).isEqualTo("Password Reset success");
   }
-
 }
