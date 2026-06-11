@@ -94,6 +94,33 @@ class AuthenticationIntegrationTest {
     assertThat(secondRefresh.get("refreshToken").asText()).isNotEqualTo(rotatedRefreshToken);
   }
 
+@Test
+@DisplayName("Should reject registration when first name exceeds max length")
+void registerShouldRejectLongFirstName() throws Exception {
+
+  String longFirstName = "A".repeat(51);
+
+  RegisterRequest request =
+      new RegisterRequest(
+          longFirstName,
+          "Tester",
+          "alice",
+          "alice@example.com",
+          "Password123!");
+
+  mockMvc
+      .perform(
+          post(REGISTER_PATH)
+              .contextPath(CONTEXT_PATH)
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.message").value("Validation failed"))
+      .andExpect(
+          jsonPath("$.fieldErrors.firstName")
+              .value("First name must not exceed 50 characters"));
+}
+
   @Test
   @DisplayName("Should reject registration when username already exists")
   void registerShouldRejectDuplicateUsername() throws Exception {
