@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller for managing blog bookmarks.
- * Supports adding, removing, checking, toggling, and listing bookmarks.
+ * Controller for managing blog bookmarks. Supports adding, removing, checking, toggling, and
+ * listing bookmarks.
  */
 @SecurityRequirement(name = "bearerAuth")
 @RestController
@@ -27,74 +27,74 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class BookmarkController {
 
-    private static final Logger logger = LoggerFactory.getLogger(BookmarkController.class);
-    private final BookmarkService bookmarkService;
+  private static final Logger LOGGER = LoggerFactory.getLogger(BookmarkController.class);
+  private final BookmarkService bookmarkService;
 
-    /**
-     * Adds a bookmark for the specified blog.
-     *
-     * @param blogId the ID of the blog to bookmark
-     * @return HTTP 204 No Content on success
-     * @throws BlogNotFoundException 
-     */
-    @PostMapping("/{blogId}")
-    public void add(@PathVariable Long blogId) throws BlogNotFoundException {
-        logger.info("Adding bookmark for blog ID: {}", blogId);
-        bookmarkService.addBookmark(blogId);
-    }
+  /**
+   * Adds a bookmark for the specified blog.
+   *
+   * @param blogId the ID of the blog to bookmark
+   * @return HTTP 204 No Content on success
+   * @throws BlogNotFoundException
+   */
+  @PostMapping("/{blogId}")
+  public void add(@PathVariable Long blogId) throws BlogNotFoundException {
+    LOGGER.info("Adding bookmark for blog ID: {}", blogId);
+    bookmarkService.addBookmark(blogId);
+  }
 
-    /**
-     * Removes a bookmark for the specified blog.
-     *
-     * @param blogId the ID of the blog to unbookmark
-     * @return HTTP 204 No Content on success
-     */
-    @DeleteMapping("/{blogId}")
-    public void remove(@PathVariable Long blogId) {
-        logger.info("Removing bookmark for blog ID: {}", blogId);
-        bookmarkService.removeBookmark(blogId);
-    }
+  /**
+   * Removes a bookmark for the specified blog.
+   *
+   * @param blogId the ID of the blog to unbookmark
+   * @return HTTP 204 No Content on success
+   */
+  @DeleteMapping("/{blogId}")
+  public void remove(@PathVariable Long blogId) {
+    LOGGER.info("Removing bookmark for blog ID: {}", blogId);
+    bookmarkService.removeBookmark(blogId);
+  }
 
-    /**
-     * Checks if the specified blog is bookmarked by the current user.
-     *
-     * @param blogId the ID of the blog to check
-     * @return true if bookmarked, false otherwise
-     */
-    @GetMapping("/check")
-    public boolean isBookmarked(@RequestParam Long blogId) {
-        logger.info("Checking bookmark status for blog ID: {}", blogId);
-        boolean result = bookmarkService.isBookmarked(blogId);
-        logger.debug("Bookmark status for blog ID {}: {}", blogId, result);
-        return result;
-    }
+  /**
+   * Checks if the specified blog is bookmarked by the current user.
+   *
+   * @param blogId the ID of the blog to check
+   * @return true if bookmarked, false otherwise
+   */
+  @GetMapping("/check")
+  public boolean isBookmarked(@RequestParam Long blogId) {
+    LOGGER.info("Checking bookmark status for blog ID: {}", blogId);
+    boolean result = bookmarkService.isBookmarked(blogId);
+    LOGGER.debug("Bookmark status for blog ID {}: {}", blogId, result);
+    return result;
+  }
 
-    /**
-     * Toggles the bookmark status for the specified blog.
-     *
-     * @param blogId the ID of the blog to toggle
-     * @return true if now bookmarked, false if removed
-     * @throws BlogNotFoundException 
-     */
-    @PostMapping("/{blogId}/toggle")
-    public boolean toggle(@PathVariable Long blogId) throws BlogNotFoundException {
-        logger.info("Toggling bookmark for blog ID: {}", blogId);
-        boolean result = bookmarkService.toggle(blogId);
-        logger.debug("Toggle result for blog ID {}: {}", blogId, result);
-        return result;
-    }
+  /**
+   * Toggles the bookmark status for the specified blog.
+   *
+   * @param blogId the ID of the blog to toggle
+   * @return true if now bookmarked, false if removed
+   * @throws BlogNotFoundException
+   */
+  @PostMapping("/{blogId}/toggle")
+  public boolean toggle(@PathVariable Long blogId) throws BlogNotFoundException {
+    LOGGER.info("Toggling bookmark for blog ID: {}", blogId);
+    boolean result = bookmarkService.toggle(blogId);
+    LOGGER.debug("Toggle result for blog ID {}: {}", blogId, result);
+    return result;
+  }
 
-    /**
-     * Lists all bookmarks for the current user with pagination.
-     *
-     * @param page the page number (default 0)
-     * @param size the page size (default 20)
-     * @return paginated list of bookmarked blogs
-     */
-    @GetMapping
-    public Page<BlogResponseDto> list(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "20") int size) {
-        logger.info("Listing bookmarks - page: {}, size: {}", page, size);
-        return bookmarkService.listMyBookmarks(PageRequest.of(page, size));
-    }
+  /**
+   * Lists all bookmarks for the current user with pagination.
+   *
+   * @param page the page number (default 0)
+   * @param size the page size (default 20)
+   * @return paginated list of bookmarked blogs
+   */
+  @GetMapping
+  public Page<BlogResponseDto> list(
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+    LOGGER.info("Listing bookmarks - page: {}, size: {}", page, size);
+    return bookmarkService.listMyBookmarks(PageRequest.of(page, size));
+  }
 }

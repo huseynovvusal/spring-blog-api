@@ -12,6 +12,12 @@
     <property name="severity" value="error"/>
     <property name="fileExtensions" value="java, properties, xml"/>
 
+    <!-- Per-file/check suppressions (e.g. Spring Data repository method names). -->
+    <module name="SuppressionFilter">
+        <property name="file" value="${config_loc}/suppressions.xml"/>
+        <property name="optional" value="false"/>
+    </module>
+
     <!-- Files must not contain tab characters in source (enforced by formatter). -->
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>

@@ -8,28 +8,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BlockUserResponse {
-    /**
-     * First name of the user.
-     */
-    private String firstName;
+  /** First name of the user. */
+  private String firstName;
 
-    /**
-     * Last name of the user.
-     */
-    private String lastName;
+  /** Last name of the user. */
+  private String lastName;
 
-    /**
-     * Username for the account.
-     */
-    private String username;
+  /** Username for the account. */
+  private String username;
 
-    /**
-     * Email address of the user.
-     */
-    private String email;
+  /** Email address of the user. */
+  private String email;
 
-    /**
-     * Indicates whether the user account is blocked.
-     */
-    private Boolean isBlocked;
+  /** Indicates whether the user account is blocked. */
+  private Boolean isBlocked;
 }

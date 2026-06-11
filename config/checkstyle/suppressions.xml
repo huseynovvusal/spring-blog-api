@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+  <!--
+    Spring Data JPA derived-query methods use underscores to denote nested
+    property-path traversal (e.g. 'User_Id' => user.id). The underscore is
+    semantically significant and must not be removed, so the MethodName rule
+    is suppressed for repository interfaces.
+  -->
+  <suppress checks="MethodName" files="[\\/]repository[\\/][^\\/]*Repository\.java$"/>
+</suppressions>
