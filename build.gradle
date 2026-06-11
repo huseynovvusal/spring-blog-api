@@ -1,6 +1,8 @@
 plugins {
 	id 'java'
 	id 'jacoco'
+	id 'checkstyle'
+	id 'com.diffplug.spotless' version '7.0.2'
 	id 'org.springframework.boot' version '3.5.4'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -70,4 +72,22 @@ jacocoTestReport {
 		xml.required = true
 		html.required = true
 	}
+}
+
+// Format check: Spotless with google-java-format
+spotless {
+	java {
+		target 'src/**/*.java'
+		googleJavaFormat()
+		removeUnusedImports()
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
+}
+
+// Lint check: Checkstyle
+checkstyle {
+	toolVersion = '10.21.4'
+	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+	ignoreFailures = false
 }
