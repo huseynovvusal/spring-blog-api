@@ -171,7 +171,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "gp07-cmd",
+      "name": "gp07-cmd",
+      "avatar_url": "https://avatars.githubusercontent.com/u/263711587?v=4",
+      "profile": "https://github.com/gp07-cmd",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "commitType": "docs"
 }
