@@ -392,15 +392,15 @@ public class RestExceptionHandler {
   }
 
   /**
-   * Handles invalid refresh token.
+   * Handles blog not found exception.
    *
    * @param ex BlogNotFoundException
    * @param req the HTTP request
-   * @return structured 400 error response
+   * @return structured 404 error response
    * @throws Exception
    */
   @ExceptionHandler(BlogNotFoundException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
   public ErrorResponseDto handleBlogNotFoundException(
       BlogNotFoundException ex, HttpServletRequest req) throws Exception {
 
@@ -411,8 +411,8 @@ public class RestExceptionHandler {
     String message = ex.getMessage() != null ? ex.getMessage() : "Blog ID not found";
     return getErrorResponse(
         req.getRequestURI(),
-        HttpStatus.BAD_REQUEST.value(),
-        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        HttpStatus.NOT_FOUND.value(),
+        HttpStatus.NOT_FOUND.getReasonPhrase(),
         message,
         Map.of());
   }
