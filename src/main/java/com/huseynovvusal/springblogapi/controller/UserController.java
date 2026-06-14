@@ -18,35 +18,32 @@ import org.springframework.web.bind.annotation.RestController;
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
-    private static final Logger logger =
-            LoggerFactory.getLogger(UserController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-    private final UserService userService;
+  private final UserService userService;
 
-    /**
-     * Retrieves the profile of the currently authenticated user.
-     *
-     * @return the current user's profile information
-     */
-    @GetMapping("/me")
-    @Operation(summary = "Get current user profile")
-    public UserResponseDto me() {
+  /**
+   * Retrieves the profile of the currently authenticated user.
+   *
+   * @return the current user's profile information
+   */
+  @GetMapping("/me")
+  @Operation(summary = "Get current user profile")
+  public UserResponseDto me() {
+    LOGGER.info("Fetching profile for authenticated user");
 
-        logger.info("Fetching profile for authenticated user");
+    User user = userService.getCurrentUser();
 
-        User user = userService.getCurrentUser();
+    UserResponseDto response =
+        new UserResponseDto(
+            user.getId(),
+            user.getUsername(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getEmail());
 
-        UserResponseDto response = new UserResponseDto(
-                user.getId(),
-                user.getUsername(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail());
+    LOGGER.debug("Profile fetched successfully for user: {}", user.getUsername());
 
-        logger.debug(
-                "Profile fetched successfully for user: {}",
-                user.getUsername());
-
-        return response;
-    }
+    return response;
+  }
 }
