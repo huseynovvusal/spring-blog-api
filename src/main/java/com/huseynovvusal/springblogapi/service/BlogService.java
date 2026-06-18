@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service class for managing blog-related operations. Handles creation, retrieval, filtering, and
@@ -52,15 +53,24 @@ public class BlogService {
   }
 
   /**
-   * Retrieves a blog by its ID.
+   * Retrieves a blog by its ID and increments its view count.
+   *
+   * <p>CACHING DECISION: Caching is intentionally disabled (see commented @Cacheable annotation) to
+   * ensure view counts are always accurate. If caching were enabled, the result could be served
+   * from cache on subsequent calls, causing the increment logic to be skipped and returning a stale
+   * view count. Since view count accuracy is critical, we prioritize correctness over caching
+   * performance.
    *
    * @param id the blog ID
-   * @return the corresponding blog response DTO
+   * @return the corresponding blog response DTO with current view count
    * @throws NoSuchElementException if the blog is not found
    */
-  @Cacheable(value = "blog", key = "#id")
+
+  // @Cacheable(value = "blog", key = "#id")
+  @Transactional
   public BlogResponseDto getById(Long id) {
     log.debug("Fetching blog by ID: {}", id);
+    blogRepository.incrementViews(id);
     Blog blog =
         blogRepository
             .findById(id)

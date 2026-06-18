@@ -27,4 +27,7 @@ public class BlogResponseDto {
 
   /** Summary information about the author of the blog. */
   UserSummaryDto author;
+
+  /** Number of times the blog post has been viewed. */
+  Long views;
 }
