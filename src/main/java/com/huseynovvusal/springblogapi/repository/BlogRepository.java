@@ -7,6 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Repository interface for accessing {@link Blog} entities. Supports pagination, dynamic filtering,
@@ -29,4 +32,12 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, JpaSpecificat
    */
   @EntityGraph(attributePaths = {"author"})
   Blog findWithAuthorById(Long id);
+
+  /**
+   * Increments the view count of a blog post by 1. This method is annotated with @Modifying to
+   * indicate
+   */
+  @Modifying
+  @Query("update Blog b set b.views = b.views + 1 where b.id = :id")
+  void incrementViews(@Param("id") Long id);
 }
