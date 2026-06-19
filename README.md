@@ -128,6 +128,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/e
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Loumo-on"><img src="https://avatars.githubusercontent.com/u/149517773?s=100" width="100px;" alt="Loumo-on"/><br /><sub><b>Loumo-on</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=Loumo-on" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/gp07-cmd"><img src="https://avatars.githubusercontent.com/u/263711587?v=4?s=100" width="100px;" alt="gp07-cmd"/><br /><sub><b>gp07-cmd</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=gp07-cmd" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/NimishNatani"><img src="https://avatars.githubusercontent.com/u/135497893?v=4?s=100" width="100px;" alt="NimishNatani"/><br /><sub><b>NimishNatani</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=NimishNatani" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/04ritesh"><img src="https://avatars.githubusercontent.com/u/108223455?v=4?s=100" width="100px;" alt="Ritesh Kumar"/><br /><sub><b>Ritesh Kumar</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=04ritesh" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
