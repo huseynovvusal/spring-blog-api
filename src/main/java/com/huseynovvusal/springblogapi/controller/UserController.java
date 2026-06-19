@@ -1,7 +1,6 @@
 package com.huseynovvusal.springblogapi.controller;
 
 import com.huseynovvusal.springblogapi.dto.response.UserResponseDto;
-import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -32,18 +31,6 @@ public class UserController {
   public UserResponseDto me() {
     LOGGER.info("Fetching profile for authenticated user");
 
-    User user = userService.getCurrentUser();
-
-    UserResponseDto response =
-        new UserResponseDto(
-            user.getId(),
-            user.getUsername(),
-            user.getFirstName(),
-            user.getLastName(),
-            user.getEmail());
-
-    LOGGER.debug("Profile fetched successfully for user: {}", user.getUsername());
-
-    return response;
+    return userService.getCurrentUserProfile();
   }
 }
