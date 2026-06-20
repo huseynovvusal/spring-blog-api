@@ -2,6 +2,8 @@ package com.huseynovvusal.springblogapi.service;
 
 import com.huseynovvusal.springblogapi.dto.BlockUserRequest;
 import com.huseynovvusal.springblogapi.dto.BlockUserResponse;
+import com.huseynovvusal.springblogapi.dto.response.UserResponseDto;
+import com.huseynovvusal.springblogapi.mapper.UserMapper;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.UserRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -36,6 +38,22 @@ public class UserService {
     String username = authentication.getName();
     log.info("[UserService] Current username: {}", username);
     return getUserByUsername(username);
+  }
+
+  /**
+   * Retrieves the currently authenticated user's profile as a DTO. This method handles both
+   * authentication check and DTO conversion, keeping business logic and data transformation in the
+   * service layer.
+   *
+   * @return the current user's profile information as UserResponseDto
+   * @throws UsernameNotFoundException if the user is not authenticated
+   */
+  public UserResponseDto getCurrentUserProfile() {
+    log.info("[UserService] Retrieving current user profile");
+    User user = getCurrentUser();
+    UserResponseDto response = UserMapper.toResponseDto(user);
+    log.debug("[UserService] User profile retrieved for user: {}", user.getUsername());
+    return response;
   }
 
   /**
