@@ -130,6 +130,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/e
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/NimishNatani"><img src="https://avatars.githubusercontent.com/u/135497893?v=4?s=100" width="100px;" alt="NimishNatani"/><br /><sub><b>NimishNatani</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=NimishNatani" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/04ritesh"><img src="https://avatars.githubusercontent.com/u/108223455?v=4?s=100" width="100px;" alt="Ritesh Kumar"/><br /><sub><b>Ritesh Kumar</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=04ritesh" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Adityaaprakash"><img src="https://avatars.githubusercontent.com/u/197950266?v=4?s=100" width="100px;" alt="Aditya Prakash"/><br /><sub><b>Aditya Prakash</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=Adityaaprakash" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 
