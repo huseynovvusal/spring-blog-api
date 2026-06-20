@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huseynovvusal.springblogapi.dto.LoginRequest;
 import com.huseynovvusal.springblogapi.dto.RefreshTokenRequest;
 import com.huseynovvusal.springblogapi.dto.RegisterRequest;
+import com.huseynovvusal.springblogapi.dto.ResetPasswordRequest;
 import com.huseynovvusal.springblogapi.repository.RefreshTokenRepository;
 import com.huseynovvusal.springblogapi.repository.UserRepository;
 import com.huseynovvusal.springblogapi.service.EmailService;
@@ -40,6 +41,7 @@ class AuthenticationIntegrationTest {
   private static final String REGISTER_PATH = CONTEXT_PATH + "/auth/register";
   private static final String LOGIN_PATH = CONTEXT_PATH + "/auth/login";
   private static final String REFRESH_PATH = CONTEXT_PATH + "/auth/refresh";
+  private static final String RESET_PASSWORD_PATH = CONTEXT_PATH + "/auth/reset-password";
 
   @Autowired private MockMvc mockMvc;
 
@@ -159,6 +161,45 @@ class AuthenticationIntegrationTest {
                         new RefreshTokenRequest("invalid-refresh-token"))))
         .andExpect(status().isInternalServerError())
         .andExpect(jsonPath("$.message").value("Unexpected error"));
+  }
+
+  @Test
+  @DisplayName("Should reject registration when password exceeds max length")
+  void registerShouldRejectLongPassword() throws Exception {
+    String longPassword = "P".repeat(73);
+    RegisterRequest request =
+        new RegisterRequest("Alice", "Tester", "alice", "alice@example.com", longPassword);
+
+    mockMvc
+        .perform(
+            post(REGISTER_PATH)
+                .contextPath(CONTEXT_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Validation failed"))
+        .andExpect(
+            jsonPath("$.fieldErrors.password")
+                .value("Password must be between 8 and 72 characters long"));
+  }
+
+  @Test
+  @DisplayName("Should reject password reset when password exceeds max length")
+  void resetPasswordShouldRejectLongPassword() throws Exception {
+    String longPassword = "P".repeat(73);
+    ResetPasswordRequest request = new ResetPasswordRequest("valid-token", longPassword);
+
+    mockMvc
+        .perform(
+            post(RESET_PASSWORD_PATH)
+                .contextPath(CONTEXT_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Validation failed"))
+        .andExpect(
+            jsonPath("$.fieldErrors.newPassword")
+                .value("Password must be between 8 and 72 characters long"));
   }
 
   private JsonNode register(RegisterRequest request) throws Exception {
