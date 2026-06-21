@@ -30,4 +30,7 @@ public class BlogResponseDto {
 
   /** Number of times the blog post has been viewed. */
   Long views;
+
+  /** Total number of likes the blog post has received. */
+  Long likeCount;
 }
