@@ -14,10 +14,11 @@ public final class BlogMapper {
   /**
    * Converts a {@link Blog} entity to a {@link BlogResponseDto}.
    *
-   * @param blog the blog entity to convert
+   * @param blog the blog entity to convert * @param likeCount the precomputed like count from
+   *     LikeRepository
    * @return the corresponding BlogResponseDto
    */
-  public static BlogResponseDto toDto(Blog blog) {
+  public static BlogResponseDto toDto(Blog blog, Long likeCount) {
     if (blog == null) {
       return null;
     }
@@ -29,7 +30,8 @@ public final class BlogMapper {
         blog.getCreatedAt(),
         blog.getUpdatedAt(),
         toUserSummary(blog.getAuthor()),
-        blog.getViews());
+        blog.getViews(),
+        likeCount); // use toDto(blog, likeCount) when count is needed
   }
 
   /**

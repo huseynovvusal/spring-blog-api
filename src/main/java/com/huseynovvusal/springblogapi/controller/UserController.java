@@ -30,7 +30,6 @@ public class UserController {
   @Operation(summary = "Get current user profile")
   public UserResponseDto me() {
     LOGGER.info("Fetching profile for authenticated user");
-
     return userService.getCurrentUserProfile();
   }
 }
