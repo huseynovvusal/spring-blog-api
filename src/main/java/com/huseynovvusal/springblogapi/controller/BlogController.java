@@ -43,6 +43,9 @@ public class BlogController {
    * @param pageable pagination and sorting information
    * @return paginated list of blog responses
    */
+  @Operation(
+      summary = "List blog posts",
+      description = "Retrieves a paginated list of all blogs sorted by creation date.")
   @GetMapping
   public Page<BlogResponseDto> getAllBlogs(
       @PageableDefault(
@@ -60,6 +63,7 @@ public class BlogController {
    * @param id the blog ID
    * @return the blog response
    */
+  @Operation(summary = "Get blog post", description = "Retrieves a blog by its unique ID.")
   @GetMapping("/{id}")
   @RateLimiter(name = "default")
   public BlogResponseDto getById(@PathVariable Long id) {
@@ -74,6 +78,9 @@ public class BlogController {
    * @param pageable pagination and sorting information
    * @return paginated list of blog responses
    */
+  @Operation(
+      summary = "List blogs by author",
+      description = "Retrieves paginated blogs authored by a specific user.")
   @GetMapping("/author/{username}")
   public Page<BlogResponseDto> getByAuthor(
       @PathVariable String username,
@@ -92,6 +99,7 @@ public class BlogController {
    * @param body the blog creation request
    * @return the created blog response
    */
+  @Operation(summary = "Create blog post", description = "Creates a new blog post.")
   @PostMapping
   public BlogResponseDto create(@Valid @RequestBody CreateBlog body) {
     LOGGER.info("Creating new blog with title: {}", body.getTitle());
@@ -110,6 +118,9 @@ public class BlogController {
    * @param pageable pagination information
    * @return paginated list of filtered blog responses
    */
+  @Operation(
+      summary = "Filter blog posts",
+      description = "Filters blogs by tags, author, creation date, query, and publication status.")
   @GetMapping("/filter")
   public Page<BlogResponseDto> filter(
       @RequestParam(required = false) List<String> tags,
