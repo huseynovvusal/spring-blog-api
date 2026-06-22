@@ -3,6 +3,7 @@ package com.huseynovvusal.springblogapi.controller;
 import com.huseynovvusal.springblogapi.dto.response.BlogResponseDto;
 import com.huseynovvusal.springblogapi.exception.BlogNotFoundException;
 import com.huseynovvusal.springblogapi.service.BookmarkService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -37,6 +38,9 @@ public class BookmarkController {
    * @return HTTP 204 No Content on success
    * @throws BlogNotFoundException
    */
+  @Operation(
+      summary = "Add bookmark",
+      description = "Adds a bookmark for the specified blog for the current user.")
   @PostMapping("/{blogId}")
   public void add(@PathVariable Long blogId) throws BlogNotFoundException {
     LOGGER.info("Adding bookmark for blog ID: {}", blogId);
@@ -49,6 +53,9 @@ public class BookmarkController {
    * @param blogId the ID of the blog to unbookmark
    * @return HTTP 204 No Content on success
    */
+  @Operation(
+      summary = "Remove bookmark",
+      description = "Removes a bookmark for the specified blog for the current user.")
   @DeleteMapping("/{blogId}")
   public void remove(@PathVariable Long blogId) {
     LOGGER.info("Removing bookmark for blog ID: {}", blogId);
@@ -61,6 +68,9 @@ public class BookmarkController {
    * @param blogId the ID of the blog to check
    * @return true if bookmarked, false otherwise
    */
+  @Operation(
+      summary = "Check bookmark",
+      description = "Checks whether the specified blog is bookmarked by the current user.")
   @GetMapping("/check")
   public boolean isBookmarked(@RequestParam Long blogId) {
     LOGGER.info("Checking bookmark status for blog ID: {}", blogId);
@@ -76,6 +86,9 @@ public class BookmarkController {
    * @return true if now bookmarked, false if removed
    * @throws BlogNotFoundException
    */
+  @Operation(
+      summary = "Toggle bookmark",
+      description = "Toggles the bookmark status for the specified blog.")
   @PostMapping("/{blogId}/toggle")
   public boolean toggle(@PathVariable Long blogId) throws BlogNotFoundException {
     LOGGER.info("Toggling bookmark for blog ID: {}", blogId);
@@ -91,6 +104,9 @@ public class BookmarkController {
    * @param size the page size (default 20)
    * @return paginated list of bookmarked blogs
    */
+  @Operation(
+      summary = "List bookmarks",
+      description = "Lists the current user's bookmarked blogs with pagination.")
   @GetMapping
   public Page<BlogResponseDto> list(
       @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {

@@ -13,6 +13,7 @@ import com.huseynovvusal.springblogapi.exception.InvalidRefreshTokenException;
 import com.huseynovvusal.springblogapi.exception.UserAlreadyRegisteredException;
 import com.huseynovvusal.springblogapi.service.AuthenticationService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -41,6 +42,9 @@ public class AuthenticationController {
    * @return a response entity with registration status and user info
    * @throws UserAlreadyRegisteredException
    */
+  @Operation(
+      summary = "Register a new user",
+      description = "Creates a new account and returns registration details.")
   @PostMapping("register")
   @RateLimiter(name = "auth")
   public RegisterResponse register(@Valid @RequestBody RegisterRequest request)
@@ -58,6 +62,9 @@ public class AuthenticationController {
    * @param request the login request containing username and password
    * @return a response entity with authentication token and user info
    */
+  @Operation(
+      summary = "Log in a user",
+      description = "Authenticates a user and returns access credentials.")
   @PostMapping("login")
   @RateLimiter(name = "auth")
   public LoginResponse login(@Valid @RequestBody LoginRequest request) {
@@ -74,6 +81,9 @@ public class AuthenticationController {
    * @param request the forgot password request containing the user's email
    * @return a response entity with token generation status
    */
+  @Operation(
+      summary = "Request password reset",
+      description = "Generates a password reset token and sends it to the user's email.")
   @PostMapping("forgot-password")
   public ForgotPasswordResponse getPasswordResetLink(
       @Valid @RequestBody ForgotPasswordRequest request) {
@@ -90,6 +100,9 @@ public class AuthenticationController {
    * @param request the reset password request containing token and new password
    * @return a response entity with password reset status
    */
+  @Operation(
+      summary = "Reset password",
+      description = "Verifies the password reset token and updates the user's password.")
   @PostMapping("reset-password")
   public ResetPasswordResponse resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
     LOGGER.info("Password reset attempt with token: {}", request.getToken());
@@ -104,6 +117,9 @@ public class AuthenticationController {
    *
    * @throws InvalidRefreshTokenException
    */
+  @Operation(
+      summary = "Refresh tokens",
+      description = "Rotates a valid refresh token into new access and refresh tokens.")
   @PostMapping("refresh")
   @RateLimiter(name = "auth")
   public LoginResponse refresh(@Valid @RequestBody RefreshTokenRequest request)
