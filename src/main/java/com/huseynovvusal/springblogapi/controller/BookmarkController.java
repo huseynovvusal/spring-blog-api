@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -85,16 +86,15 @@ public class BookmarkController {
   }
 
   /**
-   * Lists all bookmarks for the current user with pagination.
+   * Lists all bookmarks for the current user with pagination and sorting. Sort fields must match
+   * properties of the underlying Bookmark entity, such as {@code createdAt}.
    *
-   * @param page the page number (default 0)
-   * @param size the page size (default 20)
+   * @param pageable pagination and sorting information
    * @return paginated list of bookmarked blogs
    */
   @GetMapping
-  public Page<BlogResponseDto> list(
-      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
-    LOGGER.info("Listing bookmarks - page: {}, size: {}", page, size);
-    return bookmarkService.listMyBookmarks(PageRequest.of(page, size));
+  public Page<BlogResponseDto> list(@PageableDefault(size = 20) Pageable pageable) {
+    LOGGER.info("Listing bookmarks - {}", pageable);
+    return bookmarkService.listMyBookmarks(pageable);
   }
 }
