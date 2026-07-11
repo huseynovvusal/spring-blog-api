@@ -9,6 +9,7 @@ import com.huseynovvusal.springblogapi.dto.response.BlogResponseDto;
 import com.huseynovvusal.springblogapi.model.Blog;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.BlogRepository;
+import com.huseynovvusal.springblogapi.repository.LikeRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,13 +24,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class BlogServiceTest {
 
   @Mock private BlogRepository blogRepository;
+  @Mock private LikeRepository likeRepository;
 
   private BlogService blogService;
 
   @BeforeEach
   void setup() {
     MockitoAnnotations.openMocks(this);
-    blogService = new BlogService(blogRepository, null, null);
+    blogService = new BlogService(blogRepository, null, null, likeRepository);
   }
 
   @Test
@@ -49,6 +51,7 @@ class BlogServiceTest {
     blog.setAuthor(author);
 
     when(blogRepository.findById(blogId)).thenReturn(Optional.of(blog));
+    when(likeRepository.countByBlog_Id(blogId)).thenReturn(0L);
 
     // When
     BlogResponseDto result = blogService.getById(blogId);
@@ -77,6 +80,7 @@ class BlogServiceTest {
     blog.setAuthor(author);
 
     when(blogRepository.findById(blogId)).thenReturn(Optional.of(blog));
+    when(likeRepository.countByBlog_Id(blogId)).thenReturn(0L);
 
     // When
     blogService.getById(blogId);

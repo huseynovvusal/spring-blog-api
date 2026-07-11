@@ -13,6 +13,7 @@ import com.huseynovvusal.springblogapi.mapper.BlogMapper;
 import com.huseynovvusal.springblogapi.model.Blog;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.BlogRepository;
+import com.huseynovvusal.springblogapi.repository.LikeRepository;
 import com.huseynovvusal.springblogapi.security.RichTextSanitizer;
 import java.time.Instant;
 import java.util.List;
@@ -39,6 +40,7 @@ public class BlogService {
   private final BlogRepository blogRepository;
   private final UserService userService;
   private final RichTextSanitizer richTextSanitizer;
+  private final LikeRepository likeRepository;
 
   /**
    * Retrieves all blogs with pagination.
@@ -49,7 +51,9 @@ public class BlogService {
   @Cacheable(value = "blogs", key = "#pageable")
   public Page<BlogResponseDto> getAllBlogs(Pageable pageable) {
     log.debug("Fetching all blogs with pagination: {}", pageable);
-    return blogRepository.findAll(pageable).map(BlogMapper::toDto);
+    return blogRepository
+        .findAll(pageable)
+        .map(blog -> BlogMapper.toDto(blog, likeRepository.countByBlog_Id(blog.getId())));
   }
 
   /**
@@ -79,7 +83,7 @@ public class BlogService {
                   log.warn("Blog not found with ID: {}", id);
                   return new NoSuchElementException("Blog not found");
                 });
-    return BlogMapper.toDto(blog);
+    return BlogMapper.toDto(blog, likeRepository.countByBlog_Id(blog.getId()));
   }
 
   /**
@@ -93,7 +97,9 @@ public class BlogService {
   public Page<BlogResponseDto> getByAuthor(String username, Pageable pageable) {
     log.debug("Fetching blogs by author: {}", username);
     User author = userService.getUserByUsername(username);
-    return blogRepository.findByAuthor(author, pageable).map(BlogMapper::toDto);
+    return blogRepository
+        .findByAuthor(author, pageable)
+        .map(blog -> BlogMapper.toDto(blog, likeRepository.countByBlog_Id(blog.getId())));
   }
 
   /**
@@ -122,7 +128,7 @@ public class BlogService {
     Blog saved = blogRepository.save(blog);
     log.debug("Blog created with ID: {}", saved.getId());
 
-    return BlogMapper.toDto(saved);
+    return BlogMapper.toDto(blog, likeRepository.countByBlog_Id(blog.getId()));
   }
 
   /**
@@ -163,7 +169,9 @@ public class BlogService {
             titleContains(q),
             hasAnyTag(tags));
 
-    return blogRepository.findAll(spec, pageable).map(BlogMapper::toDto);
+    return blogRepository
+        .findAll(spec, pageable)
+        .map(blog -> BlogMapper.toDto(blog, likeRepository.countByBlog_Id(blog.getId())));
   }
 
   /**
@@ -178,6 +186,8 @@ public class BlogService {
   public Page<BlogResponseDto> search(String q, Pageable pageable) {
     log.debug("Searching blogs with keyword: {}", q);
     Specification<Blog> spec = Specification.where(textSearch(q)).or(tagContains(q));
-    return blogRepository.findAll(spec, pageable).map(BlogMapper::toDto);
+    return blogRepository
+        .findAll(spec, pageable)
+        .map(blog -> BlogMapper.toDto(blog, likeRepository.countByBlog_Id(blog.getId())));
   }
 }

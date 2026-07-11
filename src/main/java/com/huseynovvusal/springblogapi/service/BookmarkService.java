@@ -8,6 +8,7 @@ import com.huseynovvusal.springblogapi.model.Bookmark;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.BlogRepository;
 import com.huseynovvusal.springblogapi.repository.BookmarkRepository;
+import com.huseynovvusal.springblogapi.repository.LikeRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class BookmarkService implements SecurityAwareService {
   private final BookmarkRepository bookmarkRepository;
   private final BlogRepository blogRepository;
   private final EntityManager entityManager;
+  private final LikeRepository likeRepository;
 
   /**
    * Adds a bookmark for the current user to the specified blog. Idempotent: does nothing if already
@@ -130,6 +132,6 @@ public class BookmarkService implements SecurityAwareService {
     return bookmarkRepository
         .findAllByUser_Id(userId, pageable)
         .map(Bookmark::getBlog)
-        .map(BlogMapper::toDto);
+        .map(b -> BlogMapper.toDto(b, likeRepository.countByBlog_Id(b.getId())));
   }
 }
