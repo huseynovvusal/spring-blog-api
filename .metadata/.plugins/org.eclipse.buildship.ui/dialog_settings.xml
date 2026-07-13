@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.buildship.ui.wizard.project.import">
-		<item key="project_location" value="E:\for open source\spring-blog-api"/>
+		<item key="project_location" value="E:\for open source"/>
 		<section name="ProjectImportWizard.dialogBounds">
 			<item key="DIALOG_X_ORIGIN" value="495"/>
 			<item key="DIALOG_Y_ORIGIN" value="50"/>

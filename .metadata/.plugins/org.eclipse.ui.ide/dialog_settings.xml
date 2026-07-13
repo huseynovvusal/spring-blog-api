@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<list key="installedFeatures">
+		<item value="org.eclipse.buildship:3.1.11.v20250904-1000"/>
+		<item value="org.eclipse.egit.gitflow.feature:7.7.0.202606012155-r"/>
+		<item value="org.eclipse.egit:7.7.0.202606012155-r"/>
+		<item value="org.eclipse.epp.mpc:1.13.0.v20250816-1241"/>
+		<item value="org.eclipse.help:2.3.2600.v20260601-0713"/>
+		<item value="org.eclipse.jdt:3.20.600.v20260601-0713"/>
+		<item value="org.eclipse.jgit.gpg.bc:7.7.0.202606012155-r"/>
+		<item value="org.eclipse.jgit.http.apache:7.7.0.202606012155-r"/>
+		<item value="org.eclipse.jgit.lfs:7.7.0.202606012155-r"/>
+		<item value="org.eclipse.jgit.ssh.apache:7.7.0.202606012155-r"/>
+		<item value="org.eclipse.jgit:7.7.0.202606012155-r"/>
+		<item value="org.eclipse.jst.common.fproj.enablement.jdt:3.41.0.v202601060332"/>
+		<item value="org.eclipse.justj.openjdk.hotspot.jre.full:25.0.3.v20260502-0818"/>
+		<item value="org.eclipse.m2e.feature:2.10.200.20260602-0749"/>
+		<item value="org.eclipse.m2e.logback.feature:2.7.200.20251018-1026"/>
+		<item value="org.eclipse.m2e.wtp.feature:1.6.1.20231024-1618"/>
+		<item value="org.eclipse.mylyn.wikitext.feature:4.11.0.v20260527-1345"/>
+		<item value="org.eclipse.pde:3.16.700.v20260601-0713"/>
+		<item value="org.eclipse.platform:4.40.0.v20260601-0955"/>
+		<item value="org.eclipse.rcp:4.40.0.v20260601-0955"/>
+		<item value="org.eclipse.wst.common.fproj:3.41.0.v202601060332"/>
+		<item value="org.jboss.tools.m2e.wro4j.feature:1.2.1.202301111328"/>
+		<item value="org.sonatype.m2e.egit.feature:0.17.0.202209271423"/>
+	</list>
 	<section name="ChooseWorkspaceDialogSettings">
 		<item key="DIALOG_X_ORIGIN" value="447"/>
 		<item key="DIALOG_Y_ORIGIN" value="215"/>

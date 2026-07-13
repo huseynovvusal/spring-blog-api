@@ -2,14 +2,12 @@ package com.huseynovvusal.springblogapi.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Date;
-
-import org.junit.jupiter.api.Test;
-
 import com.huseynovvusal.springblogapi.dto.response.BlogResponseDto;
 import com.huseynovvusal.springblogapi.dto.response.UserSummaryDto;
 import com.huseynovvusal.springblogapi.model.Blog;
 import com.huseynovvusal.springblogapi.model.User;
+import java.util.Date;
+import org.junit.jupiter.api.Test;
 
 class BlogMapperTest {
 
