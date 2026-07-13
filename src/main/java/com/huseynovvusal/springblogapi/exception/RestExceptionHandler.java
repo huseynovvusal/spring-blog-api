@@ -59,7 +59,7 @@ public class RestExceptionHandler {
                 Collectors.toMap(
                     FieldError::getField,
                     DefaultMessageSourceResolvable::getDefaultMessage,
-                    (a, _) -> a,
+                    (a, ignored) -> a,
                     LinkedHashMap::new));
 
     return getErrorResponse(
@@ -91,7 +91,7 @@ public class RestExceptionHandler {
                             ? violation.getPropertyPath().toString()
                             : "",
                     ConstraintViolation::getMessage,
-                    (a, _) -> a,
+                    (a, ignored) -> a,
                     LinkedHashMap::new));
 
     return getErrorResponse(
