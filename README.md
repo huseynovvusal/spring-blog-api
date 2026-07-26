@@ -133,6 +133,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/e
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Adityaaprakash"><img src="https://avatars.githubusercontent.com/u/197950266?v=4?s=100" width="100px;" alt="Aditya Prakash"/><br /><sub><b>Aditya Prakash</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=Adityaaprakash" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/subbareddypalagiri"><img src="https://avatars.githubusercontent.com/u/167409324?v=4?s=100" width="100px;" alt="Subba Reddy Palagiri"/><br /><sub><b>Subba Reddy Palagiri</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=subbareddypalagiri" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/wipheg"><img src="https://avatars.githubusercontent.com/u/63744049?v=4?s=100" width="100px;" alt="Sangwon Park"/><br /><sub><b>Sangwon Park</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=wipheg" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

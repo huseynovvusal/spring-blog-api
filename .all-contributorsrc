@@ -216,6 +216,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "wipheg",
+      "name": "Sangwon Park",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63744049?v=4",
+      "profile": "https://github.com/wipheg",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
