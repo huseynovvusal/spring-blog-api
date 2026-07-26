@@ -3,6 +3,7 @@ package com.huseynovvusal.springblogapi.controller;
 import com.huseynovvusal.springblogapi.dto.BlockUserRequest;
 import com.huseynovvusal.springblogapi.dto.BlockUserResponse;
 import com.huseynovvusal.springblogapi.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,9 @@ public class AdminController {
   private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
   private final UserService userService;
 
+  @Operation(
+      summary = "Change user block status",
+      description = "Blocks or unblocks a user account based on the requested status.")
   @PostMapping("block-user")
   public BlockUserResponse changeBlockStatus(@Valid @RequestBody BlockUserRequest request) {
     LOGGER.info("Changing Block Status for: {}", request.getUsername());
