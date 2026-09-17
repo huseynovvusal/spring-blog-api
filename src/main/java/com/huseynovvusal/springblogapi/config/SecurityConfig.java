@@ -85,8 +85,8 @@ public class SecurityConfig {
   }
 
   /**
-   * Provides a null user cache to disable UserDetails caching. This is necessary for stateless
-   * JWT authentication to prevent authentication failures after the first login.
+   * Provides a null user cache to disable UserDetails caching. This is necessary for stateless JWT
+   * authentication to prevent authentication failures after the first login.
    *
    * @return a NullUserCache instance
    */
