@@ -1,6 +1,5 @@
 package com.huseynovvusal.springblogapi.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -76,10 +75,10 @@ public class Blog {
   private long views = 0L;
 
   /** Likes associated with this blog. Deleted together when the blog is removed. */
-  @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "blog")
   private List<Likes> likes = new ArrayList<>();
 
   /** Bookmarks associated with this blog. Deleted together when the blog is removed. */
-  @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "blog")
   private List<Bookmark> bookmarks = new ArrayList<>();
 }

@@ -79,7 +79,7 @@ The backend fully supports blog Create, Read, Update, and Delete workflows:
 - `PUT /api/v1/blogs/{id}` — update a blog you own
 - `DELETE /api/v1/blogs/{id}` — delete a blog you own
 
-When a blog is deleted, the application removes dependent records such as likes and bookmarks before deleting the blog row. This is enforced both in the service layer and via JPA cascade configuration on the `Blog` entity so the database remains consistent and foreign-key violations are avoided.
+When a blog is deleted, the application removes dependent records such as likes and bookmarks before deleting the blog row. This is enforced in the service layer so deletion stays explicit and consistent with the database lifecycle.
 
 ## 🛡️ Rate Limiting & Circuit Breaker
 

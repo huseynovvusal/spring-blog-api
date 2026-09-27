@@ -112,7 +112,7 @@ public class BlogService {
    * @return the created blog response DTO
    */
   @CacheEvict(
-      value = {"blogs", "blogsByAuthor", "myBookmarks"},
+      value = {"blogs", "blogsByAuthor"},
       allEntries = true)
   public BlogResponseDto create(CreateBlog request) {
     User currentUser = userService.getCurrentUser();
@@ -193,12 +193,8 @@ public class BlogService {
       throw new AccessDeniedException("You can only delete your own blog posts");
     }
 
-    if (likeRepository != null) {
-      likeRepository.deleteByBlog_Id(id);
-    }
-    if (bookmarkRepository != null) {
-      bookmarkRepository.deleteByBlog_Id(id);
-    }
+    likeRepository.deleteByBlog_Id(id);
+    bookmarkRepository.deleteByBlog_Id(id);
 
     blogRepository.delete(blog);
     log.info("Blog deleted with ID: {} and dependent associations removed", id);

@@ -1,7 +1,6 @@
 package com.huseynovvusal.springblogapi.controller;
 
 import com.huseynovvusal.springblogapi.dto.CreateBlog;
-import com.huseynovvusal.springblogapi.dto.UpdateBlog;
 import com.huseynovvusal.springblogapi.dto.response.BlogResponseDto;
 import com.huseynovvusal.springblogapi.service.BlogService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
@@ -17,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -120,7 +121,7 @@ public class BlogController {
       summary = "Update blog post",
       description = "Updates the title and content of an existing blog post.")
   @PutMapping("/{id}")
-  public BlogResponseDto update(@PathVariable Long id, @Valid @RequestBody UpdateBlog body) {
+  public BlogResponseDto update(@PathVariable Long id, @Valid @RequestBody CreateBlog body) {
     LOGGER.info("Updating blog with ID: {}", id);
     return blogService.update(id, body);
   }
@@ -133,7 +134,8 @@ public class BlogController {
   @Operation(
       summary = "Delete blog post",
       description = "Deletes a blog post and all dependent records.")
-  @DeleteMapping("/{id}")
+  @DeleteMapping(value = "/{id}", produces = "application/json")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   public void delete(@PathVariable Long id) {
     LOGGER.info("Deleting blog with ID: {}", id);
     blogService.delete(id);

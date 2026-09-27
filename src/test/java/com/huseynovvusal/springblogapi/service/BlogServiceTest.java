@@ -56,16 +56,16 @@ class BlogServiceTest {
   }
 
   @Test
-  @DisplayName("should evict user bookmark cache when blogs change")
-  void shouldEvictBookmarkCacheForBlogMutations() throws Exception {
+  @DisplayName("should evict blog caches on mutation")
+  void shouldEvictBlogCachesForMutations() throws Exception {
     Method createMethod = BlogService.class.getDeclaredMethod("create", CreateBlog.class);
     Method updateMethod =
         BlogService.class.getDeclaredMethod("update", Long.class, CreateBlog.class);
     Method deleteMethod = BlogService.class.getDeclaredMethod("delete", Long.class);
 
-    assertThat(createMethod.getAnnotation(CacheEvict.class).value()).contains("myBookmarks");
-    assertThat(updateMethod.getAnnotation(CacheEvict.class).value()).contains("myBookmarks");
-    assertThat(deleteMethod.getAnnotation(CacheEvict.class).value()).contains("myBookmarks");
+    assertThat(createMethod.getAnnotation(CacheEvict.class).value()).contains("blogs");
+    assertThat(updateMethod.getAnnotation(CacheEvict.class).value()).contains("filteredBlogs");
+    assertThat(deleteMethod.getAnnotation(CacheEvict.class).value()).contains("searchBlogs");
     assertThat(createMethod.getAnnotation(CacheEvict.class).allEntries()).isTrue();
     assertThat(updateMethod.getAnnotation(CacheEvict.class).allEntries()).isTrue();
     assertThat(deleteMethod.getAnnotation(CacheEvict.class).allEntries()).isTrue();
@@ -242,38 +242,6 @@ class BlogServiceTest {
 
     verify(likeRepository).deleteByBlog_Id(21L);
     verify(bookmarkRepository).deleteByBlog_Id(21L);
-    verify(blogRepository).delete(blog);
-  }
-
-  @Test
-  @DisplayName("should delete a blog when bookmark repository is not configured")
-  void shouldDeleteBlogWithoutBookmarkRepository() {
-    BlogService legacyService =
-        new BlogService(blogRepository, userService, richTextSanitizer, likeRepository, null);
-    User author = user(13L, "owner");
-    Blog blog = blog(33L, "Legacy", "content", author);
-    when(userService.getCurrentUser()).thenReturn(author);
-    when(blogRepository.findById(33L)).thenReturn(Optional.of(blog));
-    when(likeRepository.deleteByBlog_Id(33L)).thenReturn(1L);
-
-    legacyService.delete(33L);
-
-    verify(likeRepository).deleteByBlog_Id(33L);
-    verify(blogRepository).delete(blog);
-  }
-
-  @Test
-  @DisplayName("should delete a blog when like repository is not configured")
-  void shouldDeleteBlogWithoutLikeRepository() {
-    BlogService minimalService =
-        new BlogService(blogRepository, userService, richTextSanitizer, null, null);
-    User author = user(14L, "owner");
-    Blog blog = blog(44L, "Minimal", "content", author);
-    when(userService.getCurrentUser()).thenReturn(author);
-    when(blogRepository.findById(44L)).thenReturn(Optional.of(blog));
-
-    minimalService.delete(44L);
-
     verify(blogRepository).delete(blog);
   }
 
