@@ -187,6 +187,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/e
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/subbareddypalagiri"><img src="https://avatars.githubusercontent.com/u/167409324?v=4?s=100" width="100px;" alt="Subba Reddy Palagiri"/><br /><sub><b>Subba Reddy Palagiri</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=subbareddypalagiri" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/wipheg"><img src="https://avatars.githubusercontent.com/u/63744049?v=4?s=100" width="100px;" alt="Sangwon Park"/><br /><sub><b>Sangwon Park</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=wipheg" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/hos0ek71"><img src="https://avatars.githubusercontent.com/u/86303497?v=4?s=100" width="100px;" alt="JuHoSoek"/><br /><sub><b>JuHoSoek</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=hos0ek71" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/MALLADISARMA"><img src="https://avatars.githubusercontent.com/u/143084170?v=4?s=100" width="100px;" alt="Malladi Sarma"/><br /><sub><b>Malladi Sarma</b></sub></a><br /><a href="https://github.com/huseynovvusal/spring-blog-api/commits?author=MALLADISARMA" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
