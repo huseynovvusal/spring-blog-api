@@ -26,33 +26,73 @@ Welcome to **Spring Blog API**! This is a modern, secure, and scalable RESTful b
 
 ### Prerequisites
 
-- Java 24
-- Docker (optional, for containerization)
-- Gradle
+- Java 24 JDK
+- Docker Desktop with Docker Compose
+- Git
 
-### 🚦 Setup
+### 🚦 Run locally with Docker Compose
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd spring-blog-api
-   ```
-2. Build the project:
-   ```bash
-   ./gradlew build
-   ```
-3. Run Docker:
-   ```bash
-   docker-compose up
-   ```
-4. Use the API service on:
-   ```
-   http://localhost:8082/api/v1/
-   ```
+From the repository root, build the application and start the API with its supporting services:
+
+```powershell
+./gradlew clean build
+docker compose up -d
+```
+
+Check the service status:
+
+```powershell
+docker compose ps
+```
+
+The local services are available at:
+
+| Service | URL or address |
+| --- | --- |
+| REST API | `http://localhost:8082/api/v1/` |
+| Swagger UI | `http://localhost:8082/api/v1/swagger-ui/index.html` |
+| OpenAPI JSON | `http://localhost:8082/api/v1/api-docs` |
+| pgAdmin | `http://localhost:5050` |
+| MailHog | `http://localhost:8025` |
+| PostgreSQL | `localhost:5432` |
+
+The repository contains ready-to-run HTTP requests in the `http/` directory. Start with `http/AuthenticationController.http` to register and log in, then use the returned access token as a Bearer token for protected blog requests.
+
+Stop the services without deleting database data:
+
+```powershell
+docker compose down
+```
+
+Stop the services and delete the PostgreSQL volume:
+
+```powershell
+docker compose down -v
+```
 
 ### ⚙️ Configuration
 
-Edit `src/main/resources/application.yml` to configure database and other settings.
+Edit `src/main/resources/application.yml` to configure database and other settings. Environment variables can override the defaults, including `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `SPRING_MAIL_HOST`, and `SPRING_MAIL_PORT`.
+
+### 🖥️ Frontend
+
+This repository provides the Spring Boot REST API only; it does not contain a blog website or other end-user frontend. Use Swagger UI or the HTTP request files to test the API. A separate frontend can call the API at `http://localhost:8082/api/v1/`.
+
+### 🛠️ Troubleshooting
+
+If Docker cannot pull images from Docker Hub, restart Docker Desktop and retry:
+
+```powershell
+docker compose pull
+docker compose up -d
+```
+
+If the API container starts before PostgreSQL is ready, inspect the logs and restart the stack after the database is available:
+
+```powershell
+docker compose logs -f postgres api
+docker compose restart api
+```
 
 ## 📖 API Documentation
 
