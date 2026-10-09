@@ -13,6 +13,7 @@ import com.huseynovvusal.springblogapi.mapper.BlogMapper;
 import com.huseynovvusal.springblogapi.model.Blog;
 import com.huseynovvusal.springblogapi.model.User;
 import com.huseynovvusal.springblogapi.repository.BlogRepository;
+import com.huseynovvusal.springblogapi.repository.BookmarkRepository;
 import com.huseynovvusal.springblogapi.repository.LikeRepository;
 import com.huseynovvusal.springblogapi.security.RichTextSanitizer;
 import java.time.Instant;
@@ -25,6 +26,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +43,7 @@ public class BlogService {
   private final UserService userService;
   private final RichTextSanitizer richTextSanitizer;
   private final LikeRepository likeRepository;
+  private final BookmarkRepository bookmarkRepository;
 
   /**
    * Retrieves all blogs with pagination.
@@ -128,7 +131,73 @@ public class BlogService {
     Blog saved = blogRepository.save(blog);
     log.debug("Blog created with ID: {}", saved.getId());
 
-    return BlogMapper.toDto(blog, likeRepository.countByBlog_Id(blog.getId()));
+    return BlogMapper.toDto(saved, likeRepository.countByBlog_Id(saved.getId()));
+  }
+
+  /**
+   * Updates an existing blog post by ID.
+   *
+   * @param id the blog ID
+   * @param request the updated blog payload
+   * @return the updated blog response DTO
+   */
+  @CacheEvict(
+      value = {"blogs", "blogsByAuthor", "filteredBlogs", "searchBlogs", "myBookmarks"},
+      allEntries = true)
+  @Transactional
+  public BlogResponseDto update(Long id, CreateBlog request) {
+    User currentUser = userService.getCurrentUser();
+    Blog blog =
+        blogRepository
+            .findById(id)
+            .orElseThrow(
+                () -> {
+                  log.warn("Blog not found while updating ID: {}", id);
+                  return new NoSuchElementException("Blog not found");
+                });
+
+    if (!currentUser.getId().equals(blog.getAuthor().getId())) {
+      throw new AccessDeniedException("You can only update your own blog posts");
+    }
+
+    blog.setTitle(request.getTitle());
+    String sanitized = richTextSanitizer.sanitize(request.getContent());
+    blog.setContent(sanitized);
+
+    Blog updated = blogRepository.save(blog);
+    log.info("Blog updated with ID: {}", updated.getId());
+    return BlogMapper.toDto(updated, likeRepository.countByBlog_Id(updated.getId()));
+  }
+
+  /**
+   * Deletes an existing blog post and all dependent records associated with it.
+   *
+   * @param id the blog ID
+   */
+  @CacheEvict(
+      value = {"blogs", "blogsByAuthor", "filteredBlogs", "searchBlogs", "myBookmarks"},
+      allEntries = true)
+  @Transactional
+  public void delete(Long id) {
+    User currentUser = userService.getCurrentUser();
+    Blog blog =
+        blogRepository
+            .findById(id)
+            .orElseThrow(
+                () -> {
+                  log.warn("Blog not found while deleting ID: {}", id);
+                  return new NoSuchElementException("Blog not found");
+                });
+
+    if (!currentUser.getId().equals(blog.getAuthor().getId())) {
+      throw new AccessDeniedException("You can only delete your own blog posts");
+    }
+
+    likeRepository.deleteByBlog_Id(id);
+    bookmarkRepository.deleteByBlog_Id(id);
+
+    blogRepository.delete(blog);
+    log.info("Blog deleted with ID: {} and dependent associations removed", id);
   }
 
   /**

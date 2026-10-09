@@ -31,4 +31,7 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
   /** Retrieves all bookmarks by user ID with pagination. */
   Page<Bookmark> findAllByUser_Id(Long userId, Pageable pageable);
+
+  /** Deletes every bookmark associated with a given blog. Used when the blog is removed. */
+  long deleteByBlog_Id(Long blogId);
 }

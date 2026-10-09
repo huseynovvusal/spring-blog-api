@@ -37,4 +37,7 @@ public interface LikeRepository extends JpaRepository<Likes, Long> {
    * OFFSET ?
    */
   Page<Likes> findAllByBlog_Id(Long blogId, Pageable pageable);
+
+  /** Deletes every like associated with a given blog. Used when the blog is removed. */
+  long deleteByBlog_Id(Long blogId);
 }

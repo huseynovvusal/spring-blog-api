@@ -69,6 +69,18 @@ Interactive API documentation is available via Swagger UI.
   - `401 Unauthorized` — missing/expired token
   - `404 Not Found` — blog does not exist
 
+## 📝 Blog CRUD & Cascade Deletion
+
+The backend fully supports blog Create, Read, Update, and Delete workflows:
+
+- `GET /api/v1/blogs` — list blogs
+- `GET /api/v1/blogs/{id}` — fetch a single blog
+- `POST /api/v1/blogs` — create a new blog
+- `PUT /api/v1/blogs/{id}` — update a blog you own
+- `DELETE /api/v1/blogs/{id}` — delete a blog you own
+
+When a blog is deleted, the application removes dependent records such as likes and bookmarks before deleting the blog row. This is enforced in the service layer so deletion stays explicit and consistent with the database lifecycle.
+
 ## 🛡️ Rate Limiting & Circuit Breaker
 
 This API implements robust rate limiting and circuit breaker patterns to protect against abuse and service failures:
