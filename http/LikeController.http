@@ -1,0 +1,23 @@
+@token =
+@port = 8082
+
+### Like a Blog Post
+POST http://localhost:{{port}}/api/v1/likes/1
+Authorization: Bearer {{token}}
+
+### Unlike a Blog Post
+DELETE http://localhost:{{port}}/api/v1/likes/1
+Authorization: Bearer {{token}}
+
+### Toggle Like status
+POST http://localhost:{{port}}/api/v1/likes/1/toggle
+Authorization: Bearer {{token}}
+
+### Get Likes for a Blog
+GET http://localhost:{{port}}/api/v1/likes/1
+Authorization: Bearer {{token}}
+
+
+### Check if User Liked Blog
+GET http://localhost:{{port}}/api/v1/likes/check?blogId=1
+Authorization: Bearer {{token}}
