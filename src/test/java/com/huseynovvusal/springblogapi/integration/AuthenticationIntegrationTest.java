@@ -166,7 +166,7 @@ class AuthenticationIntegrationTest {
   @Test
   @DisplayName("Should reject registration when password exceeds max length")
   void registerShouldRejectLongPassword() throws Exception {
-    String longPassword = "P".repeat(73);
+    String longPassword = "Password123!" + "P".repeat(61);
     RegisterRequest request =
         new RegisterRequest("Alice", "Tester", "alice", "alice@example.com", longPassword);
 
@@ -184,9 +184,29 @@ class AuthenticationIntegrationTest {
   }
 
   @Test
+  @DisplayName("Should reject registration when password does not meet complexity requirements")
+  void registerShouldRejectWeakPassword() throws Exception {
+    RegisterRequest request =
+        new RegisterRequest("Alice", "Tester", "alice", "alice@example.com", "password123");
+
+    mockMvc
+        .perform(
+            post(REGISTER_PATH)
+                .contextPath(CONTEXT_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Validation failed"))
+        .andExpect(
+            jsonPath("$.fieldErrors.password")
+                .value(
+                    "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"));
+  }
+
+  @Test
   @DisplayName("Should reject password reset when password exceeds max length")
   void resetPasswordShouldRejectLongPassword() throws Exception {
-    String longPassword = "P".repeat(73);
+    String longPassword = "Password123!" + "P".repeat(61);
     ResetPasswordRequest request = new ResetPasswordRequest("valid-token", longPassword);
 
     mockMvc
@@ -200,6 +220,25 @@ class AuthenticationIntegrationTest {
         .andExpect(
             jsonPath("$.fieldErrors.newPassword")
                 .value("Password must be between 8 and 72 characters long"));
+  }
+
+  @Test
+  @DisplayName("Should reject password reset when password does not meet complexity requirements")
+  void resetPasswordShouldRejectWeakPassword() throws Exception {
+    ResetPasswordRequest request = new ResetPasswordRequest("valid-token", "Password123");
+
+    mockMvc
+        .perform(
+            post(RESET_PASSWORD_PATH)
+                .contextPath(CONTEXT_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Validation failed"))
+        .andExpect(
+            jsonPath("$.fieldErrors.newPassword")
+                .value(
+                    "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"));
   }
 
   private JsonNode register(RegisterRequest request) throws Exception {
