@@ -101,6 +101,11 @@ Interactive API documentation is available via Swagger UI.
 
 **`http://localhost:8082/api/v1/swagger-ui/index.html#/`**
 
+### 📝 Logging
+
+See [`docs/logging.md`](docs/logging.md) for where logs are written, what each log level means in
+this codebase, and how to read them when diagnosing a failure.
+
 #### Notes
 
 - Duplicate prevention is enforced by a unique database constraint `(user_id, blog_id)` and idempotent service logic.
