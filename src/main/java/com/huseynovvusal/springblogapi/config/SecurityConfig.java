@@ -11,11 +11,14 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserCache;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -61,7 +64,7 @@ public class SecurityConfig {
                     .hasRole("ADMIN")
                     .anyRequest()
                     .authenticated())
-        .userDetailsService(userDetailsService)
+        .authenticationProvider(daoAuthenticationProvider())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -79,6 +82,49 @@ public class SecurityConfig {
   public PasswordEncoder passwordEncoder() {
     LOGGER.debug("Creating BCryptPasswordEncoder bean");
     return new BCryptPasswordEncoder();
+  }
+
+  /**
+   * Provides a null user cache to disable UserDetails caching. This is necessary for stateless JWT
+   * authentication to prevent authentication failures after the first login.
+   *
+   * @return a NullUserCache instance
+   */
+  @Bean
+  public UserCache userCache() {
+    LOGGER.debug("Creating NullUserCache bean to disable UserDetails caching");
+    return new UserCache() {
+      @Override
+      public UserDetails getUserFromCache(String username) {
+        return null;
+      }
+
+      @Override
+      public void putUserInCache(UserDetails user) {
+        // Do nothing - cache is disabled
+      }
+
+      @Override
+      public void removeUserFromCache(String username) {
+        // Do nothing - cache is disabled
+      }
+    };
+  }
+
+  /**
+   * Configures the DaoAuthenticationProvider to use the null user cache and custom user details
+   * service.
+   *
+   * @return a configured DaoAuthenticationProvider instance
+   */
+  @Bean
+  public DaoAuthenticationProvider daoAuthenticationProvider() {
+    LOGGER.debug("Configuring DaoAuthenticationProvider with null user cache");
+    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+    provider.setUserDetailsService(userDetailsService);
+    provider.setPasswordEncoder(passwordEncoder());
+    provider.setUserCache(userCache());
+    return provider;
   }
 
   /**
