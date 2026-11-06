@@ -42,7 +42,7 @@ logging:
   file:
     name: logs/spring-blog-api.log
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n"
 
 security:
   jwt:

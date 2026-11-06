@@ -54,7 +54,9 @@ public class DatabaseHealthFilter extends OncePerRequestFilter {
           state == CircuitBreaker.State.OPEN || state == CircuitBreaker.State.FORCED_OPEN;
 
       if (unavailable) {
-        log.debug("Circuit breaker is in {} state - considering database unavailable", state);
+        // Database connectivity failure affecting live traffic — must be visible without
+        // enabling DEBUG logging, so operators can diagnose a 503 spike from the console/file log.
+        log.warn("Circuit breaker is in {} state - considering database unavailable", state);
       }
 
       return unavailable;
